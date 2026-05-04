@@ -2,25 +2,331 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --surface: #f7f7fb;
+  --border: #e5e7eb;
+  --divider: #f0f0f0;
+
+  --text-primary: #111111;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+
+  /* LearnPath Brand — Indigo/Purple #5B5CF0 */
+  --accent: #5B5CF0;
+  --accent-hover: #4f4de6;
+  --accent-light: #eeeeff;
+  --accent-subtle: #f5f4ff;
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
+  font-family: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  min-height: 100vh;
+}
+
+h1 { font-size: 28px; font-weight: 700; line-height: 36px; }
+h2 { font-size: 22px; font-weight: 600; line-height: 30px; }
+h3 { font-size: 18px; font-weight: 600; line-height: 26px; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ──────────────────────────────── */
+/* Horizontal scroll (no scrollbar) */
+/* ──────────────────────────────── */
+.category-scroll::-webkit-scrollbar { display: none; }
+
+/* ──────────────────────────────── */
+/* Curriculum Card hover            */
+/* ──────────────────────────────── */
+.curriculum-card {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  transition: box-shadow 150ms ease, border-color 150ms ease, transform 150ms ease;
+  height: 100%;
+}
+
+.curriculum-card:hover {
+  box-shadow: 0 4px 16px rgba(91, 92, 240, 0.10);
+  border-color: #c7c7f9;
+  transform: translateY(-1px);
+}
+
+/* ──────────────────────────────── */
+/* Category icon card hover         */
+/* ──────────────────────────────── */
+.category-icon-card:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 2px 8px rgba(91, 92, 240, 0.12);
+}
+
+/* ──────────────────────────────── */
+/* Resource link hover              */
+/* ──────────────────────────────── */
+.resource-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 150ms, background 150ms;
+}
+
+.resource-link:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+/* ──────────────────────────────── */
+/* Compact resource link (accordion) */
+/* ──────────────────────────────── */
+.resource-link-compact:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+/* ──────────────────────────────── */
+/* Step sidebar button hover        */
+/* ──────────────────────────────── */
+.step-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  transition: background 150ms;
+}
+
+.step-nav-btn:hover {
+  background: var(--surface);
+}
+
+.step-nav-btn.active {
+  background: var(--accent-light);
+}
+
+/* ──────────────────────────────── */
+/* Detail page two-column grid      */
+/* ──────────────────────────────── */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 48px;
+  align-items: start;
+}
+
+/* ──────────────────────────────── */
+/* Editor meta row (3-column)       */
+/* ──────────────────────────────── */
+.editor-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+/* ──────────────────────────────── */
+/* Resource input row               */
+/* ──────────────────────────────── */
+.resource-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ──────────────────────────────── */
+/* 전체메뉴 item hover              */
+/* ──────────────────────────────── */
+.menu-item:hover {
+  background: var(--surface) !important;
+}
+
+/* ──────────────────────────────── */
+/* Mobile Bottom Nav                */
+/* ──────────────────────────────── */
+.mobile-bottom-nav {
+  display: none;
+}
+
+/* ──────────────────────────────── */
+/* Player 3-column layout           */
+/* ──────────────────────────────── */
+.player-layout {
+  display: flex;
+  min-height: calc(100vh - 56px);
+}
+
+.player-left {
+  width: 264px;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
+.player-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-right {
+  width: 280px;
+  border-left: 1px solid var(--border);
+  flex-shrink: 0;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
+/* ──────────────────────────────── */
+/* Responsive helpers               */
+/* ──────────────────────────────── */
+@media (max-width: 1100px) {
+  .player-right {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 { font-size: 22px; line-height: 30px; }
+  h2 { font-size: 18px; line-height: 26px; }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .detail-sidebar {
+    position: static !important;
+    order: -1;
+  }
+  .editor-meta-grid {
+    grid-template-columns: 1fr;
+  }
+  .resource-row {
+    flex-wrap: wrap;
+  }
+  .resource-row > select {
+    flex: 1 1 100%;
+  }
+
+  .player-left {
+    display: none !important;
+  }
+  .player-right {
+    display: none !important;
+  }
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+  /* Add padding to body for bottom nav */
+  body {
+    padding-bottom: 64px;
+  }
+}
+
+/* ──────────────────────────────── */
+/* Detail hero dark section         */
+/* ──────────────────────────────── */
+.detail-hero {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+  color: #fff;
+  padding: 40px 0;
+}
+
+/* ──────────────────────────────── */
+/* Nav link hover                   */
+/* ──────────────────────────────── */
+.nav-link {
+  transition: color 150ms, background 150ms;
+}
+
+.nav-link:hover {
+  color: var(--accent) !important;
+  background: var(--accent-subtle) !important;
+}
+
+/* ──────────────────────────────── */
+/* Tab navigation                   */
+/* ──────────────────────────────── */
+.tab-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+}
+
+.tab-btn {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms;
+  margin-bottom: -2px;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--accent);
+}
+
+.tab-btn.active {
+  color: var(--accent);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+
+/* ──────────────────────────────── */
+/* Notes textarea                   */
+/* ──────────────────────────────── */
+.notes-textarea {
+  width: 100%;
+  resize: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-primary);
+  background: var(--background);
+  outline: none;
+  transition: border-color 150ms;
+}
+
+.notes-textarea:focus {
+  border-color: var(--accent);
 }

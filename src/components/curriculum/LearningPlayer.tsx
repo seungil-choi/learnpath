@@ -1,0 +1,876 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/client'
+import ProgressBar from '@/components/ui/ProgressBar'
+import { track } from '@/lib/analytics/track'
+import type { StepWithResources, Progress } from '@/lib/supabase/types'
+
+interface Props {
+  curriculum: { id: string; title: string }
+  steps: StepWithResources[]
+  userId: string | null
+  initialProgress: Progress | null
+  initialStepIdx: number
+}
+
+const RESOURCE_TYPE_LABEL: Record<string, string> = {
+  video: '영상',
+  article: '글',
+  github: 'GitHub',
+  other: '링크',
+}
+
+const RESOURCE_TYPE_COLOR: Record<string, string> = {
+  video: '#ef4444',
+  article: '#3b82f6',
+  github: '#1f2937',
+  other: '#6b7280',
+}
+
+function getYouTubeId(url: string): string | null {
+  try {
+    const u = new URL(url)
+    if (u.hostname === 'youtu.be') return u.pathname.slice(1).split('?')[0]
+    if (u.hostname.includes('youtube.com')) {
+      const v = u.searchParams.get('v')
+      if (v) return v
+      const match = u.pathname.match(/\/embed\/([^/?]+)/)
+      if (match) return match[1]
+    }
+  } catch { /* invalid URL */ }
+  return null
+}
+
+function VideoPlayer({ url, title }: { url: string; title: string | null }) {
+  const ytId = getYouTubeId(url)
+  if (!ytId) return null
+  return (
+    <div style={{
+      width: '100%',
+      aspectRatio: '16/9',
+      borderRadius: 12,
+      overflow: 'hidden',
+      background: '#0f0f0f',
+      position: 'relative',
+    }}>
+      {/* 강의 영상 label */}
+      <div style={{
+        position: 'absolute',
+        top: 12, left: 12,
+        background: 'rgba(0,0,0,0.6)',
+        color: '#fff',
+        fontSize: 11,
+        fontWeight: 600,
+        padding: '3px 8px',
+        borderRadius: 4,
+        zIndex: 1,
+        backdropFilter: 'blur(4px)',
+      }}>
+        강의 영상
+      </div>
+      <iframe
+        src={`https://www.youtube.com/embed/${ytId}`}
+        title={title ?? '강의 영상'}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+      />
+    </div>
+  )
+}
+
+export default function LearningPlayer({
+  curriculum,
+  steps,
+  userId,
+  initialProgress,
+  initialStepIdx,
+}: Props) {
+  const [currentIdx, setCurrentIdx] = useState(initialStepIdx)
+  const [completedSteps, setCompletedSteps] = useState<Set<string>>(
+    new Set(initialProgress?.completed_steps ?? [])
+  )
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mobileTab, setMobileTab] = useState<'content' | 'toc' | 'resources' | 'qa'>('content')
+  const [noteText, setNoteText] = useState('')
+  const [noteSaved, setNoteSaved] = useState(false)
+  const noteSaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const supabase = createClient()
+
+  const currentStep = steps[currentIdx]
+  const totalSteps = steps.length
+  const completedCount = completedSteps.size
+  const progressPercent = Math.round((completedCount / totalSteps) * 100)
+
+  // ── 이벤트: 학습 시작 (첫 마운트 & 진행률 0일 때)
+  useEffect(() => {
+    if (!initialProgress || (initialProgress.progress_percent ?? 0) === 0) {
+      track('curriculum_started', { step_count: totalSteps }, curriculum.id)
+    }
+    track('step_viewed', { step_index: initialStepIdx }, curriculum.id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // ── 이벤트: Step 이동 시 step_viewed
+  useEffect(() => {
+    track('step_viewed', { step_index: currentIdx }, curriculum.id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIdx])
+
+  // Load notes from localStorage
+  useEffect(() => {
+    const key = `lp-note-${curriculum.id}-step-${currentStep.id}`
+    const saved = localStorage.getItem(key)
+    setNoteText(saved ?? '')
+    setNoteSaved(false)
+  }, [currentIdx, curriculum.id, currentStep.id])
+
+  // Auto-save note
+  const handleNoteChange = (val: string) => {
+    setNoteText(val)
+    setNoteSaved(false)
+    if (noteSaveTimeout.current) clearTimeout(noteSaveTimeout.current)
+    noteSaveTimeout.current = setTimeout(() => {
+      const key = `lp-note-${curriculum.id}-step-${currentStep.id}`
+      localStorage.setItem(key, val)
+      setNoteSaved(true)
+    }, 800)
+  }
+
+  const saveProgress = async (newCompleted: Set<string>, stepId: string) => {
+    if (!userId) { setShowAuthPrompt(true); return }
+    const percent = Math.round((newCompleted.size / totalSteps) * 100)
+    await supabase.from('progress').upsert({
+      user_id: userId,
+      curriculum_id: curriculum.id,
+      completed_steps: Array.from(newCompleted),
+      progress_percent: percent,
+      last_step_id: stepId,
+      last_accessed_at: new Date().toISOString(),
+      completed_at: percent === 100 ? new Date().toISOString() : null,
+    }, { onConflict: 'user_id,curriculum_id' })
+
+    // 이벤트 트래킹
+    track('step_completed', { step_index: currentIdx, progress_percent: percent }, curriculum.id)
+    if (percent === 100) {
+      track('curriculum_completed', { step_count: totalSteps }, curriculum.id)
+    }
+  }
+
+  const handleToggleComplete = async () => {
+    const stepId = currentStep.id
+    const next = new Set(completedSteps)
+    if (next.has(stepId)) next.delete(stepId)
+    else next.add(stepId)
+    setCompletedSteps(next)
+    await saveProgress(next, stepId)
+  }
+
+  const goTo = (idx: number) => {
+    setCurrentIdx(idx)
+    setSidebarOpen(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const isCurrentCompleted = completedSteps.has(currentStep.id)
+  const videoResources = currentStep.resources.filter(r => r.type === 'video')
+  const otherResources = currentStep.resources.filter(r => r.type !== 'video')
+  const allResources = currentStep.resources
+
+  // ── Left Sidebar content ──
+  const leftSidebar = (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* Header */}
+      <div style={{ padding: '16px 16px 12px', borderBottom: '1px solid var(--divider)' }}>
+        <Link href="/my-learning" style={{
+          fontSize: 11, color: 'var(--text-tertiary)', textDecoration: 'none',
+          display: 'flex', alignItems: 'center', gap: 4, marginBottom: 10,
+        }}>
+          ← 내 학습으로
+        </Link>
+
+        {/* Curriculum thumbnail placeholder */}
+        <div style={{
+          width: '100%', aspectRatio: '16/9', borderRadius: 8,
+          background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)',
+          marginBottom: 10, overflow: 'hidden',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <span style={{ fontSize: 28 }}>📚</span>
+        </div>
+
+        <p style={{
+          fontWeight: 700, fontSize: 13, lineHeight: '18px',
+          marginBottom: 10, color: 'var(--text-primary)',
+          display: '-webkit-box',
+          WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+        }}>
+          {curriculum.title}
+        </p>
+
+        <ProgressBar percent={progressPercent} showLabel />
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 5, fontSize: 12, color: 'var(--text-tertiary)' }}>
+          <span>{completedCount} / {totalSteps} 단계 완료</span>
+          <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{progressPercent}%</span>
+        </div>
+      </div>
+
+      {/* Step list */}
+      <nav style={{ flex: 1, overflowY: 'auto', padding: '8px' }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-tertiary)', padding: '6px 12px 4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          커리큘럼 단계
+        </p>
+        {steps.map((step, idx) => {
+          const isCompleted = completedSteps.has(step.id)
+          const isCurrent = idx === currentIdx
+          return (
+            <button
+              key={step.id}
+              onClick={() => goTo(idx)}
+              className={`step-nav-btn ${isCurrent ? 'active' : ''}`}
+            >
+              <div style={{
+                width: 26, height: 26, borderRadius: 999, flexShrink: 0,
+                border: `2px solid ${isCompleted ? 'var(--success)' : isCurrent ? 'var(--accent)' : 'var(--border)'}`,
+                background: isCompleted ? 'var(--success)' : isCurrent ? 'var(--accent-light)' : 'transparent',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 11, fontWeight: 700,
+                color: isCompleted ? '#fff' : isCurrent ? 'var(--accent)' : 'var(--text-tertiary)',
+              }}>
+                {isCompleted
+                  ? <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5L9.5 3.5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  : idx + 1
+                }
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{
+                  fontSize: 12, fontWeight: isCurrent ? 600 : 400,
+                  color: isCurrent ? 'var(--accent)' : 'var(--text-primary)',
+                  lineHeight: '16px',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>
+                  {step.title}
+                </p>
+                {(step as { estimated_duration?: number }).estimated_duration ? (
+                  <p style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 2 }}>
+                    {(step as { estimated_duration?: number }).estimated_duration}분
+                  </p>
+                ) : null}
+              </div>
+            </button>
+          )
+        })}
+      </nav>
+
+      {/* Bottom links */}
+      <div style={{ padding: '12px 16px', borderTop: '1px solid var(--divider)' }}>
+        <Link href={`/curriculum/${curriculum.id}`} style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          fontSize: 12, color: 'var(--text-secondary)', textDecoration: 'none',
+          padding: '6px 0',
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M13 16l-4-4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          커리큘럼 상세 보기
+        </Link>
+      </div>
+    </div>
+  )
+
+  // ── Right sidebar content ──
+  const rightSidebar = (
+    <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+
+      {/* 학습 리소스 */}
+      {allResources.length > 0 && (
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 700, marginBottom: 12 }}>
+            학습 리소스 <span style={{ color: 'var(--text-tertiary)', fontWeight: 400 }}>{allResources.length}</span>
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {allResources.map(r => (
+              <a
+                key={r.id}
+                href={r.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '10px 12px',
+                  border: '1px solid var(--border)',
+                  borderRadius: 8,
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  background: '#fff',
+                  transition: 'border-color 150ms, background 150ms',
+                }}
+                className="resource-link-compact"
+              >
+                <div style={{
+                  width: 32, height: 32, borderRadius: 6, flexShrink: 0,
+                  background: `${RESOURCE_TYPE_COLOR[r.type] ?? '#6b7280'}18`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {r.type === 'video' && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill={RESOURCE_TYPE_COLOR.video}>
+                      <path d="M8 5l11 7-11 7V5z" />
+                    </svg>
+                  )}
+                  {r.type === 'article' && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <rect x="4" y="4" width="16" height="16" rx="2" stroke={RESOURCE_TYPE_COLOR.article} strokeWidth="2" />
+                      <path d="M8 9h8M8 13h5" stroke={RESOURCE_TYPE_COLOR.article} strokeWidth="1.8" strokeLinecap="round" />
+                    </svg>
+                  )}
+                  {(r.type !== 'video' && r.type !== 'article') && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path d="M10 14a4 4 0 005.66 0l3-3a4 4 0 00-5.66-5.66l-1.5 1.5" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" />
+                      <path d="M14 10a4 4 0 00-5.66 0l-3 3a4 4 0 005.66 5.66l1.5-1.5" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{
+                    fontSize: 12, fontWeight: 500,
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    lineHeight: '16px', marginBottom: 2,
+                  }}>
+                    {r.title ?? r.url}
+                  </p>
+                  <p style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>
+                    {RESOURCE_TYPE_LABEL[r.type] ?? '링크'}
+                  </p>
+                </div>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, color: 'var(--text-tertiary)' }}>
+                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 나의 학습 노트 */}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+          <p style={{ fontSize: 13, fontWeight: 700 }}>나의 학습 노트</p>
+          {noteSaved && (
+            <span style={{ fontSize: 11, color: 'var(--success)', fontWeight: 600 }}>✓ 저장됨</span>
+          )}
+        </div>
+        <textarea
+          value={noteText}
+          onChange={e => handleNoteChange(e.target.value)}
+          placeholder="이번 단계에서 배운 내용을&#10;자유롭게 기록해보세요..."
+          maxLength={1000}
+          rows={5}
+          className="notes-textarea"
+        />
+        <p style={{ fontSize: 11, color: 'var(--text-tertiary)', textAlign: 'right', marginTop: 4 }}>
+          {noteText.length} / 1000
+        </p>
+      </div>
+
+      {/* AI 요약 (베타) */}
+      <div style={{
+        border: '1px solid var(--border)',
+        borderRadius: 10,
+        padding: '14px',
+        background: 'var(--surface)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+          <p style={{ fontSize: 13, fontWeight: 700 }}>AI 요약</p>
+          <span style={{
+            fontSize: 10, fontWeight: 700, padding: '1px 6px',
+            background: 'var(--accent)', color: '#fff', borderRadius: 4,
+          }}>베타</span>
+        </div>
+        <p style={{ fontSize: 12, color: 'var(--text-tertiary)', lineHeight: '18px', marginBottom: 10 }}>
+          Claude가 이 단계의 핵심 내용을 요약해드려요.
+        </p>
+        <button style={{
+          width: '100%', padding: '9px 0',
+          borderRadius: 8, border: '1px solid var(--accent)',
+          color: 'var(--accent)', background: 'var(--accent-light)',
+          fontSize: 13, fontWeight: 600, cursor: 'pointer',
+          fontFamily: 'inherit', transition: 'background 150ms',
+        }}>
+          ✦ 이 단계 요약하기
+        </button>
+      </div>
+
+      {/* 도움이 필요하신가요? */}
+      <div>
+        <p style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>도움이 필요하신가요?</p>
+        <p style={{ fontSize: 12, color: 'var(--text-tertiary)', lineHeight: '18px', marginBottom: 10 }}>
+          커뮤니티에서 질문하고 함께 성장해보세요.
+        </p>
+        <a
+          href="#"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            fontSize: 13, color: 'var(--accent)', fontWeight: 600, textDecoration: 'none',
+          }}
+        >
+          질문하러 가기
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="player-layout" style={{ position: 'relative' }}>
+
+      {/* ── Left Sidebar (Desktop) ── */}
+      <aside className="player-left">
+        {leftSidebar}
+      </aside>
+
+      {/* ── Mobile sidebar overlay ── */}
+      {sidebarOpen && (
+        <>
+          <div
+            onClick={() => setSidebarOpen(false)}
+            style={{
+              position: 'fixed', inset: 0,
+              background: 'rgba(0,0,0,0.4)',
+              zIndex: 40,
+            }}
+          />
+          <div style={{
+            position: 'fixed', top: 56, left: 0, bottom: 0,
+            width: 280, background: '#fff',
+            zIndex: 50, overflowY: 'auto',
+            borderRight: '1px solid var(--border)',
+            boxShadow: '4px 0 16px rgba(0,0,0,0.12)',
+          }}>
+            {leftSidebar}
+          </div>
+        </>
+      )}
+
+      {/* ── Main Content ── */}
+      <div className="player-main">
+
+        {/* Mobile top bar */}
+        <div style={{
+          display: 'none',
+          alignItems: 'center',
+          gap: 12,
+          padding: '10px 16px',
+          borderBottom: '1px solid var(--border)',
+          background: '#fff',
+          position: 'sticky',
+          top: 56,
+          zIndex: 30,
+        }} className="player-mobile-topbar">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            style={{
+              padding: '6px 10px',
+              border: '1px solid var(--border)',
+              borderRadius: 6,
+              background: 'transparent',
+              cursor: 'pointer',
+              fontSize: 16,
+              fontFamily: 'inherit',
+            }}
+          >
+            ☰
+          </button>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <ProgressBar percent={progressPercent} showLabel />
+          </div>
+        </div>
+
+        {/* Step content */}
+        <div style={{ padding: '36px 48px 60px', maxWidth: 760 }} className="player-content">
+
+          {/* Step indicator */}
+          <p style={{
+            fontSize: 12, fontWeight: 700, color: 'var(--accent)',
+            marginBottom: 8, letterSpacing: '0.3px',
+          }}>
+            Step {currentIdx + 1} / {totalSteps}
+          </p>
+
+          <h2 style={{ marginBottom: 10, letterSpacing: '-0.3px', fontSize: 22 }}>
+            {currentStep.title}
+          </h2>
+
+          {currentStep.description && (
+            <p style={{
+              color: 'var(--text-secondary)',
+              lineHeight: '26px',
+              fontSize: 15,
+              marginBottom: 28,
+              whiteSpace: 'pre-wrap',
+            }}>
+              {currentStep.description}
+            </p>
+          )}
+
+          {/* Video embed */}
+          {videoResources.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              {videoResources.map(r => (
+                <VideoPlayer key={r.id} url={r.url} title={r.title} />
+              ))}
+            </div>
+          )}
+
+          {/* Other resources (non-video) — shown in main area on mobile */}
+          {otherResources.length > 0 && (
+            <div style={{ marginBottom: 28 }} className="mobile-resources">
+              <p style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-tertiary)', marginBottom: 10 }}>
+                학습 자료
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {otherResources.map(r => (
+                  <a
+                    key={r.id}
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="resource-link"
+                  >
+                    <span style={{
+                      fontSize: 12, padding: '3px 8px',
+                      background: 'var(--surface)', borderRadius: 4,
+                      color: 'var(--text-secondary)', flexShrink: 0, fontWeight: 500,
+                    }}>
+                      {RESOURCE_TYPE_LABEL[r.type] ?? '링크'}
+                    </span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{
+                        fontWeight: 500, fontSize: 14,
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}>
+                        {r.title ?? r.url}
+                      </p>
+                    </div>
+                    <span style={{ color: 'var(--accent)', fontSize: 12, flexShrink: 0 }}>↗</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Auth Prompt */}
+          {showAuthPrompt && (
+            <div style={{
+              background: 'var(--accent-light)',
+              border: '1px solid #c7c7f9',
+              borderRadius: 10,
+              padding: '16px 20px',
+              marginBottom: 24,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 16, flexWrap: 'wrap',
+            }}>
+              <div>
+                <p style={{ fontWeight: 600, fontSize: 14, marginBottom: 3 }}>
+                  진도를 저장하려면 로그인이 필요해요
+                </p>
+                <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                  로그인하면 언제든 이어서 학습할 수 있어요
+                </p>
+              </div>
+              <Link href={`/auth?next=/curriculum/${curriculum.id}/learn`} style={{
+                padding: '8px 16px', borderRadius: 8,
+                background: 'var(--accent)', color: '#fff',
+                textDecoration: 'none', fontWeight: 600, fontSize: 13, flexShrink: 0,
+              }}>
+                로그인하기
+              </Link>
+            </div>
+          )}
+
+          {/* Completion feedback */}
+          {isCurrentCompleted && !showAuthPrompt && (
+            <div style={{
+              background: '#f0fdf4', border: '1px solid #86efac',
+              borderRadius: 8, padding: '10px 14px', marginBottom: 20,
+              fontSize: 13, color: '#15803d', fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" fill="#22c55e" />
+                <path d="M7.5 12l3 3 6-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              이 단계를 완료했어요
+            </div>
+          )}
+
+          {/* Step navigation */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingTop: 28,
+            borderTop: '1px solid var(--divider)',
+            gap: 12,
+            marginTop: 8,
+          }}>
+            <button
+              onClick={() => goTo(currentIdx - 1)}
+              disabled={currentIdx === 0}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '10px 18px',
+                borderRadius: 8,
+                border: '1px solid var(--border)',
+                background: 'transparent',
+                color: 'var(--text-secondary)',
+                cursor: currentIdx === 0 ? 'not-allowed' : 'pointer',
+                opacity: currentIdx === 0 ? 0.4 : 1,
+                fontSize: 14, fontFamily: 'inherit',
+              }}
+            >
+              ← 이전 단계
+            </button>
+
+            {/* Step dots */}
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              {steps.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goTo(i)}
+                  style={{
+                    width: i === currentIdx ? 20 : 8,
+                    height: 8,
+                    borderRadius: 999,
+                    background: i === currentIdx ? 'var(--accent)' : completedSteps.has(steps[i].id) ? 'var(--success)' : 'var(--border)',
+                    border: 'none', cursor: 'pointer',
+                    transition: 'all 250ms ease',
+                    padding: 0,
+                  }}
+                />
+              ))}
+            </div>
+
+            {currentIdx < totalSteps - 1 ? (
+              <button
+                onClick={() => {
+                  if (!isCurrentCompleted) handleToggleComplete()
+                  goTo(currentIdx + 1)
+                }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '10px 18px',
+                  borderRadius: 8,
+                  border: 'none',
+                  background: 'var(--accent)',
+                  color: '#fff',
+                  fontWeight: 700, fontSize: 14,
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                다음 단계 →
+              </button>
+            ) : (
+              <button
+                onClick={handleToggleComplete}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '10px 18px',
+                  borderRadius: 8,
+                  border: 'none',
+                  background: isCurrentCompleted ? 'var(--success)' : 'var(--accent)',
+                  color: '#fff',
+                  fontWeight: 700, fontSize: 14,
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                {isCurrentCompleted ? '✓ 완료됨' : '단계 완료 표시'}
+              </button>
+            )}
+          </div>
+
+          {/* 완료 배너 */}
+          {progressPercent === 100 && (
+            <div style={{
+              marginTop: 32,
+              background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+              border: '1px solid #86efac',
+              borderRadius: 14, padding: '28px 24px',
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: 44, marginBottom: 12 }}>🎉</div>
+              <h3 style={{ marginBottom: 6, color: '#15803d', fontSize: 20 }}>커리큘럼 완료!</h3>
+              <p style={{ fontSize: 14, color: '#166534', marginBottom: 20 }}>
+                모든 단계를 마쳤습니다. 수고하셨어요!
+              </p>
+              <Link href={`/curriculum/${curriculum.id}`} style={{
+                display: 'inline-block', padding: '10px 24px',
+                borderRadius: 8, background: 'var(--success)',
+                color: '#fff', textDecoration: 'none',
+                fontWeight: 700, fontSize: 14,
+              }}>
+                커리큘럼으로 돌아가기
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Right Sidebar (Desktop 1100px+) ── */}
+      <aside className="player-right">
+        {rightSidebar}
+      </aside>
+
+      {/* ── Mobile Bottom Tab Bar ── */}
+      <div className="player-mobile-tabs" style={{
+        display: 'none',
+        position: 'fixed',
+        bottom: 64, left: 0, right: 0,
+        zIndex: 60,
+        background: '#fff',
+        borderTop: '1px solid var(--border)',
+        flexDirection: 'column',
+      }}>
+        {/* Tab nav */}
+        <div style={{ display: 'flex', borderBottom: '1px solid var(--divider)' }}>
+          {([
+            { key: 'content', label: '학습 콘텐츠' },
+            { key: 'toc', label: `목차` },
+            { key: 'resources', label: `자료 ${allResources.length}` },
+            { key: 'qa', label: 'Q&A' },
+          ] as const).map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setMobileTab(tab.key)}
+              style={{
+                flex: 1, padding: '10px 4px',
+                border: 'none', background: 'transparent',
+                fontFamily: 'inherit', fontSize: 12, fontWeight: mobileTab === tab.key ? 700 : 400,
+                color: mobileTab === tab.key ? 'var(--accent)' : 'var(--text-tertiary)',
+                borderBottom: `2px solid ${mobileTab === tab.key ? 'var(--accent)' : 'transparent'}`,
+                cursor: 'pointer',
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* TOC panel */}
+        {mobileTab === 'toc' && (
+          <div style={{ maxHeight: '40vh', overflowY: 'auto', background: '#fff' }}>
+            {steps.map((step, idx) => {
+              const isCompleted = completedSteps.has(step.id)
+              const isCurrent = idx === currentIdx
+              return (
+                <button
+                  key={step.id}
+                  onClick={() => { setCurrentIdx(idx); setMobileTab('content'); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    width: '100%', padding: '12px 16px',
+                    border: 'none', background: isCurrent ? 'var(--accent-light)' : 'transparent',
+                    borderBottom: '1px solid var(--divider)', textAlign: 'left',
+                    cursor: 'pointer', fontFamily: 'inherit',
+                  }}
+                >
+                  <div style={{
+                    width: 24, height: 24, borderRadius: 999, flexShrink: 0,
+                    background: isCompleted ? 'var(--success)' : isCurrent ? 'var(--accent)' : 'var(--surface)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 11, fontWeight: 700,
+                    color: isCompleted || isCurrent ? '#fff' : 'var(--text-tertiary)',
+                  }}>
+                    {isCompleted ? '✓' : idx + 1}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{
+                      fontSize: 13, fontWeight: isCurrent ? 700 : 400,
+                      color: isCurrent ? 'var(--accent)' : 'var(--text-primary)',
+                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    }}>
+                      {step.title}
+                    </p>
+                    {(step as any).estimated_duration && (
+                      <p style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 2 }}>
+                        {(step as any).estimated_duration}분
+                      </p>
+                    )}
+                  </div>
+                  {isCurrent && (
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M5 3l6 4-6 4V3z" fill="var(--accent)" />
+                    </svg>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Resources panel */}
+        {mobileTab === 'resources' && (
+          <div style={{ maxHeight: '40vh', overflowY: 'auto', padding: '12px 16px', background: '#fff' }}>
+            {allResources.length === 0 ? (
+              <p style={{ textAlign: 'center', color: 'var(--text-tertiary)', padding: '24px 0', fontSize: 13 }}>
+                이 Step에 자료가 없어요
+              </p>
+            ) : allResources.map(r => (
+              <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '10px 12px', marginBottom: 8,
+                  border: '1px solid var(--border)', borderRadius: 8,
+                  textDecoration: 'none', color: 'inherit', background: '#fff',
+                }}
+              >
+                <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 7px', borderRadius: 4, background: 'var(--accent-light)', color: 'var(--accent)', flexShrink: 0 }}>
+                  {RESOURCE_TYPE_LABEL[r.type] ?? '링크'}
+                </span>
+                <span style={{ fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {r.title ?? r.url}
+                </span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, color: 'var(--text-tertiary)' }}>
+                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* Q&A panel */}
+        {mobileTab === 'qa' && (
+          <div style={{ padding: '24px 16px', textAlign: 'center', background: '#fff' }}>
+            <div style={{ fontSize: 32, marginBottom: 8 }}>💬</div>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 4 }}>Q&A 기능은 준비 중이에요</p>
+            <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>커뮤니티에서 질문해보세요</p>
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .player-mobile-topbar { display: flex !important; }
+          .player-mobile-tabs { display: flex !important; }
+          .player-content { padding: 20px 16px 200px !important; }
+          .mobile-resources { display: block; }
+        }
+        @media (min-width: 769px) {
+          .mobile-resources { display: none; }
+        }
+        @media (min-width: 1100px) {
+          .mobile-resources { display: none !important; }
+        }
+      `}</style>
+    </div>
+  )
+}
