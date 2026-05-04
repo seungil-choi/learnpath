@@ -21,6 +21,7 @@ interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   saves: any[]
   stats: Stats
+  isDemoMode?: boolean
 }
 
 type Tab = 'all' | 'inprogress' | 'completed' | 'saved' | 'drafts'
@@ -60,7 +61,7 @@ function CircleProgress({ percent }: { percent: number }) {
   )
 }
 
-export default function MyLearningClient({ inProgress, completed, drafts, saves, stats }: Props) {
+export default function MyLearningClient({ inProgress, completed, drafts, saves, stats, isDemoMode }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('all')
 
   const tabs: { key: Tab; label: string; count?: number }[] = [
