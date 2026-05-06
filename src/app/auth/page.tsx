@@ -137,42 +137,6 @@ function AuthForm() {
         </button>
       </form>
 
-      {/* 데모 둘러보기 */}
-      <div style={{
-        marginTop: 16,
-        padding: '14px 16px',
-        borderRadius: 10,
-        background: 'var(--accent-subtle)',
-        border: '1px solid var(--accent-light)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 10,
-      }}>
-        <p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700, textAlign: 'center' }}>
-          • 로그인 없이 데모 체험
-        </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-          {[
-            { href: '/my-learning', label: '내 학습', Icon: BookOpenIcon },
-            { href: '/my-page', label: '마이페이지', Icon: UserIcon },
-            { href: '/explore', label: '탐색', Icon: SearchIcon },
-            { href: '/create', label: '만들기', Icon: PencilIcon },
-          ].map(item => (
-            <Link key={item.href} href={item.href} style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-              textAlign: 'center',
-              padding: '8px', borderRadius: 8,
-              background: '#fff', border: '1px solid var(--border)',
-              color: 'var(--accent)', textDecoration: 'none',
-              fontSize: 12, fontWeight: 600,
-              transition: 'border-color 150ms',
-            }}>
-              <item.Icon size={12} /> {item.label}
-            </Link>
-          ))}
-        </div>
-      </div>
-
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--divider)', textAlign: 'center' }}>
         <Link href="/" style={{ fontSize: 12, color: 'var(--text-tertiary)', textDecoration: 'none' }}>
           홈으로 돌아가기 →
