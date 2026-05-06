@@ -46,39 +46,235 @@ function getYouTubeId(url: string): string | null {
 
 function VideoPlayer({ url, title }: { url: string; title: string | null }) {
   const ytId = getYouTubeId(url)
-  if (!ytId) return null
+
+  if (ytId) {
+    return (
+      <div style={{
+        width: '100%', aspectRatio: '16/9',
+        borderRadius: 12, overflow: 'hidden',
+        background: '#0f0f0f', position: 'relative',
+      }}>
+        <iframe
+          src={`https://www.youtube.com/embed/${ytId}?rel=0`}
+          title={title ?? '강의 영상'}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+        />
+      </div>
+    )
+  }
+
+  // YouTube가 아닌 영상 — 외부 링크 카드
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: 'flex', alignItems: 'center', gap: 16,
+        padding: '20px 24px',
+        border: '1.5px solid var(--border)',
+        borderRadius: 12,
+        background: '#fff',
+        textDecoration: 'none',
+        color: 'inherit',
+        transition: 'border-color 150ms, box-shadow 150ms',
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--accent)'
+        ;(e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 4px 16px rgba(91,92,240,0.12)'
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--border)'
+        ;(e.currentTarget as HTMLAnchorElement).style.boxShadow = 'none'
+      }}
+    >
+      <div style={{
+        width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+        background: 'rgba(239,68,68,0.1)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#ef4444">
+          <path d="M8 5l11 7-11 7V5z" />
+        </svg>
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontWeight: 600, fontSize: 14, marginBottom: 3 }}>
+          {title ?? '강의 영상 보기'}
+        </p>
+        <p style={{ fontSize: 12, color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {url}
+        </p>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+      </svg>
+    </a>
+  )
+}
+
+function ArticleViewer({ url, title }: { url: string; title: string | null }) {
+  const hostname = (() => { try { return new URL(url).hostname.replace('www.', '') } catch { return url } })()
+
   return (
     <div style={{
-      width: '100%',
-      aspectRatio: '16/9',
+      border: '1.5px solid var(--border)',
       borderRadius: 12,
       overflow: 'hidden',
-      background: '#0f0f0f',
-      position: 'relative',
+      background: '#fff',
     }}>
-      {/* 강의 영상 label */}
+      {/* 상단 툴바 */}
       <div style={{
-        position: 'absolute',
-        top: 12, left: 12,
-        background: 'rgba(0,0,0,0.6)',
-        color: '#fff',
-        fontSize: 11,
-        fontWeight: 600,
-        padding: '3px 8px',
-        borderRadius: 4,
-        zIndex: 1,
-        backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '10px 16px',
+        background: 'var(--surface)',
+        borderBottom: '1px solid var(--border)',
       }}>
-        강의 영상
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+          <div style={{
+            width: 20, height: 20, borderRadius: 4, flexShrink: 0,
+            background: 'rgba(59,130,246,0.12)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2.2" strokeLinecap="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" />
+            </svg>
+          </div>
+          <span style={{ fontSize: 12, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {hostname}
+          </span>
+        </div>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            padding: '5px 12px',
+            borderRadius: 6,
+            background: 'var(--accent)',
+            color: '#fff',
+            textDecoration: 'none',
+            fontSize: 12, fontWeight: 600,
+            flexShrink: 0,
+            transition: 'opacity 150ms',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.85' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1' }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+          </svg>
+          새 탭에서 열기
+        </a>
       </div>
-      <iframe
-        src={`https://www.youtube.com/embed/${ytId}`}
-        title={title ?? '강의 영상'}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
-      />
+
+      {/* iframe 임베드 시도 */}
+      <div style={{ position: 'relative', height: 520 }}>
+        {/* fallback 배경 (iframe이 막힐 경우 노출) */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          background: 'var(--surface)',
+          gap: 12,
+        }}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.5" strokeLinecap="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>
+          <p style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>
+            {title ?? '읽을 거리'}
+          </p>
+          <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
+            외부 사이트 콘텐츠는 새 탭에서 읽을 수 있어요
+          </p>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              padding: '10px 20px', borderRadius: 8,
+              background: 'var(--accent)', color: '#fff',
+              textDecoration: 'none', fontSize: 13, fontWeight: 700,
+            }}
+          >
+            읽기 시작하기 →
+          </a>
+        </div>
+        <iframe
+          src={url}
+          title={title ?? '학습 자료'}
+          style={{
+            width: '100%', height: '100%',
+            border: 'none', display: 'block',
+            position: 'relative', zIndex: 1,
+          }}
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        />
+      </div>
     </div>
+  )
+}
+
+function GitHubViewer({ url, title }: { url: string; title: string | null }) {
+  const repoPath = (() => {
+    try {
+      const u = new URL(url)
+      if (u.hostname === 'github.com') return u.pathname.slice(1)
+    } catch { /* */ }
+    return null
+  })()
+
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: 'flex', alignItems: 'center', gap: 16,
+        padding: '20px 24px',
+        border: '1.5px solid var(--border)',
+        borderRadius: 12,
+        background: '#fff',
+        textDecoration: 'none',
+        color: 'inherit',
+        transition: 'border-color 150ms, box-shadow 150ms',
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1f2937'
+        ;(e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--border)'
+        ;(e.currentTarget as HTMLAnchorElement).style.boxShadow = 'none'
+      }}
+    >
+      <div style={{
+        width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+        background: '#f6f8fa', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#1f2937">
+          <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+        </svg>
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>
+          {title ?? (repoPath ?? 'GitHub 저장소')}
+        </p>
+        {repoPath && (
+          <p style={{ fontSize: 12, color: 'var(--text-tertiary)', fontFamily: 'monospace' }}>
+            github.com/{repoPath}
+          </p>
+        )}
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+      </svg>
+    </a>
   )
 }
 
@@ -530,17 +726,63 @@ export default function LearningPlayer({
             </p>
           )}
 
-          {/* Video embed */}
-          {videoResources.length > 0 && (
-            <div style={{ marginBottom: 28 }}>
-              {videoResources.map(r => (
-                <VideoPlayer key={r.id} url={r.url} title={r.title} />
+          {/* ── 리소스 콘텐츠 뷰어 (타입별) ── */}
+          {currentStep.resources.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginBottom: 28 }}>
+              {currentStep.resources.map(r => (
+                <div key={r.id}>
+                  {/* 리소스 레이블 */}
+                  <p style={{
+                    fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
+                    letterSpacing: '0.5px', color: 'var(--text-tertiary)',
+                    marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6,
+                  }}>
+                    <span style={{
+                      display: 'inline-block', width: 6, height: 6, borderRadius: 999,
+                      background: r.type === 'video' ? '#ef4444' : r.type === 'article' ? '#3b82f6' : r.type === 'github' ? '#1f2937' : '#6b7280',
+                    }} />
+                    {RESOURCE_TYPE_LABEL[r.type] ?? '링크'}
+                  </p>
+
+                  {/* 타입별 뷰어 */}
+                  {r.type === 'video' && <VideoPlayer url={r.url} title={r.title} />}
+                  {r.type === 'article' && <ArticleViewer url={r.url} title={r.title} />}
+                  {r.type === 'github' && <GitHubViewer url={r.url} title={r.title} />}
+                  {r.type === 'other' && (
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 12,
+                        padding: '16px 20px',
+                        border: '1.5px solid var(--border)', borderRadius: 12,
+                        background: '#fff', textDecoration: 'none', color: 'inherit',
+                        transition: 'border-color 150ms',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--accent)' }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--border)' }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 14a4 4 0 005.66 0l3-3a4 4 0 00-5.66-5.66l-1.5 1.5" />
+                        <path d="M14 10a4 4 0 00-5.66 0l-3 3a4 4 0 005.66 5.66l1.5-1.5" />
+                      </svg>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontWeight: 600, fontSize: 13, marginBottom: 2 }}>{r.title ?? '링크 열기'}</p>
+                        <p style={{ fontSize: 11, color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.url}</p>
+                      </div>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
               ))}
             </div>
           )}
 
-          {/* Other resources (non-video) — shown in main area on mobile */}
-          {otherResources.length > 0 && (
+          {/* [Legacy — mobile only resources, now unused] */}
+          {false && otherResources.length > 0 && (
             <div style={{ marginBottom: 28 }} className="mobile-resources">
               <p style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-tertiary)', marginBottom: 10 }}>
                 학습 자료
