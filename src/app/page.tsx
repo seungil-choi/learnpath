@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import CurriculumCard from '@/components/curriculum/CurriculumCard'
 import HomeCategorySection from '@/components/home/HomeCategorySection'
+import ResumeHero from '@/components/home/ResumeHero'
 import FooterLocale from '@/components/ui/FooterLocale'
 import FooterSocialLinks from '@/components/ui/FooterSocialLinks'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
@@ -52,7 +53,7 @@ export default async function HomePage() {
   const { data: myProgress } = user
     ? await supabase
         .from('progress')
-        .select('*, curricula(*, profiles(username, avatar_url))')
+        .select('*, curricula(id, title, category, level, estimated_duration, thumbnail_url)')
         .eq('user_id', user.id)
         .lt('progress_percent', 100)
         .order('last_accessed_at', { ascending: false })
@@ -62,12 +63,69 @@ export default async function HomePage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inProgress = (myProgress ?? []) as any[]
 
+  /* Resume First — 가장 최근 멈춘 Path의 마지막 Step 정보 별도 조회 */
+  let resumePrimary: any = null
+  let resumeSecondary: any[] = []
+  let displayName: string | null = null
+
+  if (user && inProgress.length > 0) {
+    const top = inProgress[0]
+    // 마지막 Step 제목 + 인덱스 + 전체 Step 수 조회
+    const { data: stepsForResume } = await supabase
+      .from('steps')
+      .select('id, title, order')
+      .eq('curriculum_id', top.curriculum_id)
+      .order('order')
+
+    const steps = stepsForResume ?? []
+    const total = steps.length
+    let lastStepTitle: string | null = null
+    let lastStepIndex: number | null = null
+
+    if (top.last_step_id) {
+      const idx = steps.findIndex(s => s.id === top.last_step_id)
+      if (idx >= 0) {
+        lastStepTitle = steps[idx].title
+        lastStepIndex = idx + 1
+      }
+    }
+    // last_step_id가 없으면 첫 번째 Step
+    if (!lastStepTitle && steps.length > 0) {
+      lastStepTitle = steps[0].title
+      lastStepIndex = 1
+    }
+
+    resumePrimary = {
+      ...top,
+      last_step_title: lastStepTitle,
+      last_step_index: lastStepIndex,
+      total_steps: total,
+    }
+    resumeSecondary = inProgress.slice(1, 4)
+
+    // 사용자 이름 (display_name 우선, 없으면 email 앞부분)
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('display_name, username')
+      .eq('id', user.id)
+      .maybeSingle()
+    displayName = profile?.display_name || profile?.username || (user.email?.split('@')[0] ?? null)
+  }
+
   return (
     <div>
 
       {/* ══════════════════════════════════════
-          HERO
+          HERO — 로그인 사용자에 진행 중 학습이 있으면
+                 Resume First 카드로 대체
       ══════════════════════════════════════ */}
+      {resumePrimary ? (
+        <ResumeHero
+          primary={resumePrimary}
+          secondary={resumeSecondary}
+          userName={displayName}
+        />
+      ) : (
       <section style={{
         background: 'linear-gradient(160deg, #f5f4ff 0%, #eeeeff 50%, #f0f0ff 100%)',
         overflow: 'hidden',
@@ -287,6 +345,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ══════════════════════════════════════
           추천 학습 경로
@@ -340,92 +399,33 @@ export default async function HomePage() {
         />
       </section>
 
-      {/* ══════════════════════════════════════
-          내 학습 현황 (로그인 시)
-      ══════════════════════════════════════ */}
-      {user && inProgress.length > 0 && (
-        <section style={{ padding: '56px 0 0' }}>
-          <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 24 }}>
-              <div>
-                <h2 style={{ fontSize: 20, marginBottom: 4 }}>내 학습 현황</h2>
-                <p style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>현재 진행 중인 학습을 이어가세요</p>
-              </div>
-              <Link href="/my-learning" style={{ fontSize: 13, color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>
-                전체 보기 →
-              </Link>
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: 16,
-            }}>
-              {inProgress.map((p) => {
-                const cur = p.curricula
-                if (!cur) return null
-                return (
-                  <div key={p.id} style={{
-                    border: '1px solid var(--border)',
-                    borderRadius: 14,
-                    overflow: 'hidden',
-                    background: '#fff',
-                  }}>
-                    {/* Thumbnail */}
-                    <div style={{
-                      height: 80,
-                      background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)',
-                      position: 'relative',
-                    }}>
-                      <div style={{
-                        position: 'absolute', top: 8, left: 8,
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 6, padding: '2px 8px',
-                        fontSize: 11, fontWeight: 600, color: '#fff',
-                      }}>
-                        진행 중
-                      </div>
-                    </div>
-                    <div style={{ padding: '14px' }}>
-                      <p style={{ fontWeight: 700, fontSize: 14, marginBottom: 4, lineHeight: '20px' }}>{cur.title}</p>
-                      <p style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 10 }}>
-                        {p.progress_percent}% 완료
-                      </p>
-                      {/* Progress bar */}
-                      <div style={{ height: 4, background: 'var(--border)', borderRadius: 999, overflow: 'hidden', marginBottom: 12 }}>
-                        <div style={{ height: '100%', width: `${p.progress_percent}%`, background: 'var(--accent)', borderRadius: 999 }} />
-                      </div>
-                      <Link href={`/curriculum/${cur.id}/learn`} style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        padding: '9px',
-                        borderRadius: 8, border: '1.5px solid var(--accent)',
-                        color: 'var(--accent)', textDecoration: 'none',
-                        fontSize: 13, fontWeight: 700,
-                      }}>
-                        이어보기 →
-                      </Link>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* 진행 중 학습은 상단 ResumeHero에 흡수됨 — 중복 섹션 제거 */}
 
       {/* ══════════════════════════════════════
-          커뮤니티 인기 토픽
+          커뮤니티 인기 토픽 (현재는 예시 데이터)
       ══════════════════════════════════════ */}
       <section style={{ padding: '56px 0 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
             <div>
-              <h2 style={{ fontSize: 20, marginBottom: 4 }}>커뮤니티 인기 토픽</h2>
-              <p style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>지금 뜨고 있는 주제를 확인해보세요</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <h2 style={{ fontSize: 20 }}>커뮤니티 인기 토픽</h2>
+                <span style={{
+                  fontSize: 10, fontWeight: 700,
+                  padding: '2px 8px', borderRadius: 999,
+                  background: 'var(--accent-light)', color: 'var(--accent)',
+                  letterSpacing: '0.3px',
+                }}>
+                  COMING SOON
+                </span>
+              </div>
+              <p style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>
+                커뮤니티 기능은 준비 중이에요 — 아래는 예시 화면입니다
+              </p>
             </div>
-            <a href="#" style={{ fontSize: 13, color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>
-              커뮤니티 전체 보기 →
-            </a>
+            <span style={{ fontSize: 13, color: 'var(--text-tertiary)', fontWeight: 500 }}>
+              곧 만나요
+            </span>
           </div>
 
           <div style={{

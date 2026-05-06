@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { getCategoryGradient } from '@/lib/categories'
-import { BookOpenIcon, BookmarkIcon, ClockIcon, PencilIcon } from '@/components/ui/icons'
+import { BookOpenIcon, BookmarkIcon, ClockIcon, PencilIcon, FlagIcon, CheckIcon } from '@/components/ui/icons'
+import { timeAgo } from '@/lib/timeAgo'
 
 interface Stats {
   inProgressCount: number
@@ -11,6 +12,8 @@ interface Stats {
   savedCount: number
   totalTime: string
   overallPercent: number
+  streak?: number
+  completedStepsTotal?: number
 }
 
 interface Props {
@@ -85,21 +88,22 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
         display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap',
       }}>
         <CircleProgress percent={stats.overallPercent} />
-        <div style={{ display: 'flex', gap: 32, flex: 1, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 28, flex: 1, flexWrap: 'wrap' }}>
           {([
-            { Icon: BookOpenIcon, label: '진행 중', value: `${stats.inProgressCount}개` },
-            { Icon: null, label: '완료', value: `${stats.completedCount}개`, green: true },
-            { Icon: BookmarkIcon, label: '저장함', value: `${stats.savedCount}개` },
+            { Icon: BookOpenIcon, label: '진행 중 Path', value: `${stats.inProgressCount}` },
+            { Icon: CheckIcon, label: '완료한 Step', value: `${stats.completedStepsTotal ?? 0}` },
+            { Icon: FlagIcon, label: '연속 학습', value: `${stats.streak ?? 0}일`, accent: (stats.streak ?? 0) > 0 },
+            { Icon: null, label: '완성한 Path', value: `${stats.completedCount}`, green: true },
             { Icon: ClockIcon, label: '학습 시간', value: stats.totalTime },
-          ] as Array<{ Icon: React.FC<{ size?: number; style?: React.CSSProperties }> | null; label: string; value: string; green?: boolean }>).map(item => (
+          ] as Array<{ Icon: React.FC<{ size?: number; style?: React.CSSProperties }> | null; label: string; value: string; green?: boolean; accent?: boolean }>).map(item => (
             <div key={item.label} style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 64 }}>
-              <span style={{ fontSize: 20, display: 'flex', alignItems: 'center', color: item.green ? 'var(--success)' : 'var(--text-secondary)' }}>
+              <span style={{ fontSize: 20, display: 'flex', alignItems: 'center', color: item.green ? 'var(--success)' : item.accent ? 'var(--accent)' : 'var(--text-secondary)' }}>
                 {item.green
                   ? <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--success)' }}>✓</span>
                   : item.Icon && <item.Icon size={20} />
                 }
               </span>
-              <span style={{ fontSize: 20, fontWeight: 900, lineHeight: 1, color: item.green ? 'var(--success)' : 'var(--text-primary)' }}>
+              <span style={{ fontSize: 20, fontWeight: 900, lineHeight: 1, color: item.green ? 'var(--success)' : item.accent ? 'var(--accent)' : 'var(--text-primary)' }}>
                 {item.value}
               </span>
               <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{item.label}</span>
@@ -176,7 +180,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                       </div>
                       {p.last_accessed_at && (
                         <p style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 4 }}>
-                          마지막 학습 {formatDate(p.last_accessed_at)}
+                          {timeAgo(p.last_accessed_at)}에 멈췄어요
                         </p>
                       )}
                     </div>

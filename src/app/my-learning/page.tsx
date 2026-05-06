@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import MyLearningClient from '@/components/my-learning/MyLearningClient'
 import DemoBanner from '@/components/ui/DemoBanner'
+import { calcStreak, formatStudyTime } from '@/lib/streak'
 
 /* ── 데모용 가상 진도 데이터 (실제 커리큘럼 ID 사용) ── */
 const DEMO_IN_PROGRESS = [
@@ -128,6 +129,8 @@ export default async function MyLearningPage() {
       savedCount: DEMO_SAVES.length,
       totalTime: '7시간 0분',
       overallPercent: 38,
+      streak: 5,
+      completedStepsTotal: 24,
     }
     return (
       <>
@@ -174,10 +177,19 @@ export default async function MyLearningPage() {
   const completed = progressList.filter(p => p.progress_percent === 100)
   const drafts = myCurricula.filter((c: any) => !c.is_published)
 
-  const totalMinutes = completed.reduce((acc: number, p: any) =>
+  // 학습 시간: 완료한 커리큘럼 + 진행 중 커리큘럼의 부분 진행률 추정
+  const completedMinutes = completed.reduce((acc: number, p: any) =>
     acc + (p.curricula?.estimated_duration ?? 0), 0)
-  const totalHours = Math.floor(totalMinutes / 60)
-  const totalMins = totalMinutes % 60
+  const inProgressMinutes = inProgress.reduce((acc: number, p: any) =>
+    acc + Math.round(((p.curricula?.estimated_duration ?? 0) * (p.progress_percent ?? 0)) / 100), 0)
+  const totalMinutes = completedMinutes + inProgressMinutes
+
+  // Streak: progress.last_accessed_at 기준 연속 학습일
+  const streak = calcStreak(progressList.map((p: any) => p.last_accessed_at))
+
+  // 완료한 Step 총 개수
+  const completedStepsTotal = progressList.reduce((acc: number, p: any) =>
+    acc + (Array.isArray(p.completed_steps) ? p.completed_steps.length : 0), 0)
 
   return (
     <MyLearningClient
@@ -189,13 +201,13 @@ export default async function MyLearningPage() {
         inProgressCount: inProgress.length,
         completedCount: completed.length,
         savedCount: saves.length,
-        totalTime: totalHours > 0
-          ? `${totalHours}시간${totalMins > 0 ? ` ${totalMins}분` : ''}`
-          : `${totalMins > 0 ? `${totalMins}분` : '0분'}`,
+        totalTime: formatStudyTime(totalMinutes),
         overallPercent: progressList.length > 0
           ? Math.round(progressList.reduce((acc: number, p: any) =>
               acc + (p.progress_percent ?? 0), 0) / progressList.length)
           : 0,
+        streak,
+        completedStepsTotal,
       }}
     />
   )

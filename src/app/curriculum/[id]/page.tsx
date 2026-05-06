@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import DetailSidebar from '@/components/curriculum/DetailSidebar'
 import DetailTabs from '@/components/curriculum/DetailTabs'
 import CurriculumViewTracker from '@/components/curriculum/CurriculumViewTracker'
+import MobileDetailCTA from '@/components/curriculum/MobileDetailCTA'
 
 function formatDuration(minutes: number) {
   if (!minutes) return null
@@ -106,6 +107,17 @@ export default async function CurriculumDetailPage({
     : { data: null }
 
   const isCreator = user?.id === curriculum.creator_id
+  // 저장 여부
+  const { data: saveRow } = user
+    ? await supabase
+        .from('curriculum_saves')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('curriculum_id', id)
+        .maybeSingle()
+    : { data: null }
+  const initialSaved = !!saveRow
+
   const duration = formatDuration(curriculum.estimated_duration)
   const targetAudience: string[] = curriculum.target_audience ?? []
   const prerequisites: string[] = curriculum.prerequisites ?? []
@@ -293,8 +305,8 @@ export default async function CurriculumDetailPage({
             />
           </div>
 
-          {/* ── Sticky Sidebar ── */}
-          <div className="detail-sidebar" style={{ position: 'sticky', top: 80 }}>
+          {/* ── Sticky Sidebar (PC 전용 — 모바일은 하단 고정 CTA로 대체) ── */}
+          <div className="detail-sidebar pc-only-sidebar" style={{ position: 'sticky', top: 80 }}>
             <DetailSidebar
               curriculumId={id}
               userId={user?.id ?? null}
@@ -317,9 +329,21 @@ export default async function CurriculumDetailPage({
         </div>
       </div>
 
+      {/* 모바일 전용 하단 고정 CTA */}
+      <MobileDetailCTA
+        curriculumId={id}
+        userId={user?.id ?? null}
+        initialSaved={initialSaved}
+        hasProgress={!!userProgress}
+        progressPercent={userProgress?.progress_percent ?? 0}
+      />
+
       <style>{`
         @media (max-width: 900px) {
           .hero-thumbnail { display: none !important; }
+          .pc-only-sidebar { display: none !important; }
+          /* 하단 고정 CTA 가림 방지 */
+          body { padding-bottom: 88px; }
         }
       `}</style>
     </div>
