@@ -56,9 +56,10 @@ export async function track(
 
 /**
  * 개발 환경에서 이벤트를 콘솔에 출력합니다.
+ * (프로덕션에서는 no-op)
  */
 export function trackDev(eventName: EventName, properties: EventProperties = {}): void {
   if (process.env.NODE_ENV === 'development') {
-    console.log(`📊 [LearnPath Event] ${eventName}`, properties)
+    console.debug(`[LearnPath Dev] ${eventName}`, properties)
   }
 }

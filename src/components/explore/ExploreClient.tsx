@@ -21,7 +21,7 @@ interface Props {
 }
 
 /* ─ 상수 ─ */
-const CATEGORIES = ['전체', 'AI·자동화', '프로그래밍', '디자인', '비즈니스', '언어', '취미·라이프']
+const CATEGORIES = ['전체', 'AI·자동화', '프로그래밍', '디자인', '비즈니스', '생산성']
 
 const LEVELS = [
   { label: '모든 수준', value: '' },

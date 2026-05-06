@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { track } from '@/lib/analytics/track'
+import { slugify, uniqueSlug } from '@/lib/slugify'
 import type { CurriculumDetail } from '@/lib/supabase/types'
 
 /* ─── 타입 ─── */
@@ -28,7 +29,7 @@ interface Props {
 }
 
 /* ─── 상수 ─── */
-const CATEGORIES = ['AI·자동화', '프로그래밍', '디자인', '비즈니스', '언어', '취미·라이프', '기타']
+const CATEGORIES = ['AI·자동화', '프로그래밍', '디자인', '비즈니스', '생산성', '기타']
 const LEVELS = [
   { value: 'beginner', label: '초급 (입문자)', icon: '🌱' },
   { value: 'intermediate', label: '중급 (기본 지식)', icon: '📗' },
@@ -236,6 +237,22 @@ export default function CreateWizard({ userId, curriculum }: Props) {
       let curriculumId = curriculum?.id
       const durVal = parseInt(durationValue) || 0
 
+      // publish 시 slug 자동 생성 (없는 경우만)
+      let slug: string | undefined
+      if (publish) {
+        const existingSlug = (curriculum as any)?.slug
+        if (!existingSlug) {
+          const base = slugify(title.trim())
+          slug = await uniqueSlug(base, async (candidate) => {
+            const { data } = await supabase
+              .from('curricula').select('id').eq('slug', candidate)
+              .neq('id', curriculumId ?? '00000000-0000-0000-0000-000000000000')
+              .maybeSingle()
+            return !!data
+          })
+        }
+      }
+
       if (curriculumId) {
         await supabase.from('curricula').update({
           title: title.trim(), description: description.trim() || null,
@@ -245,6 +262,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
           target_audience: targetAudience, prerequisites,
           learning_goals: learningGoals, is_published: publish,
           published_at: publish ? new Date().toISOString() : null,
+          ...(slug ? { slug } : {}),
         }).eq('id', curriculumId)
         await supabase.from('steps').delete().eq('curriculum_id', curriculumId)
       } else {
@@ -257,6 +275,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
           learning_goals: learningGoals, creator_id: userId,
           is_published: publish,
           published_at: publish ? new Date().toISOString() : null,
+          ...(slug ? { slug } : {}),
         }).select().single()
         if (error || !data) throw error
         curriculumId = data.id

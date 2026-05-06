@@ -11,8 +11,7 @@ const SIDEBAR_CATEGORIES = [
   { label: '프로그래밍', value: '프로그래밍', icon: '💻' },
   { label: '디자인', value: '디자인', icon: '🎨' },
   { label: '비즈니스', value: '비즈니스', icon: '💼' },
-  { label: '언어', value: '언어', icon: '🌏' },
-  { label: '취미 · 라이프', value: '취미·라이프', icon: '🌿' },
+  { label: '생산성', value: '생산성', icon: '⚡' },
 ]
 
 /* ─────────────────── 커뮤니티 더미 데이터 ─────────────────── */
