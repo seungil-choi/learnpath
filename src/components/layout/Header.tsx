@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useLocale } from '@/lib/i18n/context'
+import LocaleSwitcher from '@/components/ui/LocaleSwitcher'
 import type { User } from '@supabase/supabase-js'
 
 function navStyle(active: boolean): React.CSSProperties {
@@ -27,6 +29,7 @@ function navStyle(active: boolean): React.CSSProperties {
 export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
+  const { t } = useLocale()
   const [user, setUser] = useState<User | null>(null)
   const [mounted, setMounted] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
@@ -126,18 +129,18 @@ export default function Header() {
         {/* ── Desktop Nav ── */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: 2, flexShrink: 0 }} className="desktop-nav">
           <Link href="/explore" style={navStyle(isActive('/explore'))} className="nav-link">
-            탐색 ▾
+            {t('nav_explore')} ▾
           </Link>
           {/* MVP placeholders — shown but non-functional */}
           <span style={{ ...navStyle(false), color: 'var(--text-tertiary)', opacity: 0.6, cursor: 'default' }}>
-            학습 로드맵
+            {t('nav_roadmap')}
           </span>
           <span style={{ ...navStyle(false), color: 'var(--text-tertiary)', opacity: 0.6, cursor: 'default' }}>
-            커뮤니티
+            {t('nav_community')}
           </span>
           {isLoggedIn && (
             <Link href="/create" style={navStyle(isActive('/create'))} className="nav-link">
-              만들기
+              {t('nav_create')}
             </Link>
           )}
         </nav>
@@ -159,7 +162,7 @@ export default function Header() {
             <input
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="배우고 싶은 주제를 검색해보세요"
+              placeholder={t('header_search_placeholder')}
               style={{
                 width: '100%',
                 padding: '8px 44px 8px 36px',
@@ -192,6 +195,9 @@ export default function Header() {
         {/* ── Right Actions ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
 
+          {/* 언어 변경 */}
+          <LocaleSwitcher />
+
           {/* 만들기 CTA */}
           <Link
             href={isLoggedIn ? '/create' : '/auth'}
@@ -209,7 +215,7 @@ export default function Header() {
             onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'var(--accent-hover)' }}
             onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'var(--accent)' }}
           >
-            만들기
+            {t('header_create_cta')}
           </Link>
 
           {isLoggedIn && (
@@ -225,7 +231,7 @@ export default function Header() {
                   fontSize: 16, color: 'var(--text-secondary)',
                   transition: 'border-color 150ms, background 150ms',
                 }}
-                title="알림"
+                title={t('header_notifications')}
               >
                 🔔
               </button>
@@ -286,9 +292,9 @@ export default function Header() {
                     </div>
 
                     {[
-                      { href: '/my-page', label: '마이페이지', desc: '프로필 및 통계' },
-                      { href: '/my-learning', label: '내 학습', desc: '진행 중·완료한 학습' },
-                      { href: '/create', label: '만들기', desc: '새 커리큘럼 제작' },
+                      { href: '/my-page', label: t('nav_my_page'), desc: t('menu_my_page_desc') },
+                      { href: '/my-learning', label: t('nav_my_learning'), desc: t('menu_my_learning_desc') },
+                      { href: '/create', label: t('nav_create'), desc: t('menu_create_desc') },
                     ].map(item => (
                       <Link
                         key={item.href}
@@ -330,7 +336,7 @@ export default function Header() {
                       }}
                       className="menu-item"
                     >
-                      <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>로그아웃</p>
+                      <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{t('menu_signout')}</p>
                     </button>
 
                     <div style={{ height: 4 }} />
@@ -356,7 +362,7 @@ export default function Header() {
                 transition: 'border-color 150ms',
               }}
             >
-              로그인
+              {t('header_login')}
             </Link>
           )}
         </div>

@@ -3,6 +3,7 @@ import { Noto_Sans_KR } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import MobileBottomNav from '@/components/layout/MobileBottomNav'
+import { LocaleProvider } from '@/lib/i18n/context'
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
@@ -19,9 +20,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko" className={notoSansKR.className}>
       <body className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <MobileBottomNav />
+        <LocaleProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <MobileBottomNav />
+        </LocaleProvider>
       </body>
     </html>
   )

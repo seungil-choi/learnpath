@@ -9,6 +9,11 @@ export interface Database {
           username: string | null
           bio: string | null
           avatar_url: string | null
+          display_name: string | null
+          preferred_locale: string
+          role: string
+          interest_category_keys: string[]
+          onboarded_at: string | null
           created_at: string
         }
         Insert: {
@@ -16,12 +21,22 @@ export interface Database {
           username?: string | null
           bio?: string | null
           avatar_url?: string | null
+          display_name?: string | null
+          preferred_locale?: string
+          role?: string
+          interest_category_keys?: string[]
+          onboarded_at?: string | null
           created_at?: string
         }
         Update: {
           username?: string | null
           bio?: string | null
           avatar_url?: string | null
+          display_name?: string | null
+          preferred_locale?: string
+          role?: string
+          interest_category_keys?: string[]
+          onboarded_at?: string | null
         }
         Relationships: []
       }
