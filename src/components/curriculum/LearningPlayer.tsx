@@ -114,109 +114,75 @@ function VideoPlayer({ url, title }: { url: string; title: string | null }) {
   )
 }
 
+/**
+ * 글/문서 자료 — 컴팩트 카드 (iframe 임베드 시도하지 않음)
+ *
+ * 이유: 대부분의 외부 사이트는 X-Frame-Options/CSP로 임베드를 차단하므로
+ *       큰 iframe 영역은 빈 박스만 노출됨. 영상이 메인이고 글은 보조 자료.
+ *
+ * 참고 사례: Coursera/Udemy/Khan/Claude Academy 모두 외부 글 자료는 링크 카드.
+ */
 function ArticleViewer({ url, title }: { url: string; title: string | null }) {
-  const hostname = (() => { try { return new URL(url).hostname.replace('www.', '') } catch { return url } })()
+  const hostname = (() => {
+    try { return new URL(url).hostname.replace('www.', '') } catch { return url }
+  })()
 
   return (
-    <div style={{
-      border: '1.5px solid var(--border)',
-      borderRadius: 12,
-      overflow: 'hidden',
-      background: '#fff',
-    }}>
-      {/* 상단 툴바 */}
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        padding: '14px 16px',
+        border: '1.5px solid var(--border)', borderRadius: 12,
+        background: '#fff', textDecoration: 'none', color: 'inherit',
+        transition: 'border-color 150ms, box-shadow 200ms',
+      }}
+      onMouseEnter={e => {
+        ;(e.currentTarget as HTMLAnchorElement).style.borderColor = '#3b82f6'
+        ;(e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 2px 12px rgba(59,130,246,0.10)'
+      }}
+      onMouseLeave={e => {
+        ;(e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--border)'
+        ;(e.currentTarget as HTMLAnchorElement).style.boxShadow = 'none'
+      }}
+    >
       <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '10px 16px',
-        background: 'var(--surface)',
-        borderBottom: '1px solid var(--border)',
+        width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+        background: 'rgba(59,130,246,0.10)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-          <div style={{
-            width: 20, height: 20, borderRadius: 4, flexShrink: 0,
-            background: 'rgba(59,130,246,0.12)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2.2" strokeLinecap="round">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" />
-            </svg>
-          </div>
-          <span style={{ fontSize: 12, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {hostname}
-          </span>
-        </div>
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            padding: '5px 12px',
-            borderRadius: 6,
-            background: 'var(--accent)',
-            color: '#fff',
-            textDecoration: 'none',
-            fontSize: 12, fontWeight: 600,
-            flexShrink: 0,
-            transition: 'opacity 150ms',
-          }}
-          onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.85' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1' }}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
-          </svg>
-          새 탭에서 열기
-        </a>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <line x1="10" y1="9" x2="8" y2="9" />
+        </svg>
       </div>
 
-      {/* iframe 임베드 시도 */}
-      <div style={{ position: 'relative', height: 520 }}>
-        {/* fallback 배경 (iframe이 막힐 경우 노출) */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          background: 'var(--surface)',
-          gap: 12,
-        }}>
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-          </svg>
-          <p style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>
-            {title ?? '읽을 거리'}
-          </p>
-          <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
-            외부 사이트 콘텐츠는 새 탭에서 읽을 수 있어요
-          </p>
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              padding: '10px 20px', borderRadius: 8,
-              background: 'var(--accent)', color: '#fff',
-              textDecoration: 'none', fontSize: 13, fontWeight: 700,
-            }}
-          >
-            읽기 시작하기 →
-          </a>
-        </div>
-        <iframe
-          src={url}
-          title={title ?? '학습 자료'}
-          style={{
-            width: '100%', height: '100%',
-            border: 'none', display: 'block',
-            position: 'relative', zIndex: 1,
-          }}
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-        />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontWeight: 700, fontSize: 14, marginBottom: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {title ?? '읽을 거리'}
+        </p>
+        <p style={{ fontSize: 12, color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {hostname}
+        </p>
       </div>
-    </div>
+
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 5,
+        padding: '7px 12px', borderRadius: 8,
+        background: 'var(--surface)', color: 'var(--text-secondary)',
+        fontSize: 12, fontWeight: 600, flexShrink: 0,
+      }}>
+        원문 보기
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+        </svg>
+      </div>
+    </a>
   )
 }
 
@@ -373,9 +339,14 @@ export default function LearningPlayer({
   }
 
   const isCurrentCompleted = completedSteps.has(currentStep.id)
+  // ── 리소스 우선순위 정렬: video > article > github > other ──
+  // 영상이 메인 콘텐츠로 가장 위에 오도록 (Coursera/Udemy/Claude Academy 패턴)
+  const RESOURCE_PRIORITY: Record<string, number> = { video: 0, article: 1, github: 2, other: 3 }
   const videoResources = currentStep.resources.filter(r => r.type === 'video')
   const otherResources = currentStep.resources.filter(r => r.type !== 'video')
-  const allResources = currentStep.resources
+  const allResources = [...currentStep.resources].sort((a, b) =>
+    (RESOURCE_PRIORITY[a.type] ?? 99) - (RESOURCE_PRIORITY[b.type] ?? 99)
+  )
 
   // ── Left Sidebar content ──
   const leftSidebar = (
@@ -726,12 +697,12 @@ export default function LearningPlayer({
             </p>
           )}
 
-          {/* ── 리소스 콘텐츠 뷰어 (타입별) ── */}
-          {currentStep.resources.length > 0 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginBottom: 28 }}>
-              {currentStep.resources.map(r => (
+          {/* ── 리소스 콘텐츠 뷰어 ── */}
+          {/* 영상 = 메인 (큰 플레이어), 글/링크 = 보조 자료 그룹 */}
+          {videoResources.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24, marginBottom: 24 }}>
+              {videoResources.map(r => (
                 <div key={r.id}>
-                  {/* 리소스 레이블 */}
                   <p style={{
                     fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
                     letterSpacing: '0.5px', color: 'var(--text-tertiary)',
@@ -739,13 +710,42 @@ export default function LearningPlayer({
                   }}>
                     <span style={{
                       display: 'inline-block', width: 6, height: 6, borderRadius: 999,
-                      background: r.type === 'video' ? '#ef4444' : r.type === 'article' ? '#3b82f6' : r.type === 'github' ? '#1f2937' : '#6b7280',
+                      background: '#ef4444',
                     }} />
-                    {RESOURCE_TYPE_LABEL[r.type] ?? '링크'}
+                    {RESOURCE_TYPE_LABEL.video}
+                    {r.title && (
+                      <span style={{ fontWeight: 500, textTransform: 'none', letterSpacing: 0, color: 'var(--text-secondary)' }}>
+                        · {r.title}
+                      </span>
+                    )}
                   </p>
+                  <VideoPlayer url={r.url} title={r.title} />
+                </div>
+              ))}
+            </div>
+          )}
 
+          {/* 보조 자료 (글/GitHub/기타) — 컴팩트 카드 그룹 */}
+          {otherResources.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              <p style={{
+                fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
+                letterSpacing: '0.5px', color: 'var(--text-tertiary)',
+                marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6,
+              }}>
+                <span style={{
+                  display: 'inline-block', width: 6, height: 6, borderRadius: 999,
+                  background: 'var(--text-tertiary)',
+                }} />
+                {videoResources.length > 0 ? '함께 보면 좋은 자료' : '학습 자료'}
+                <span style={{ marginLeft: 4, fontWeight: 400, color: 'var(--text-tertiary)' }}>
+                  {otherResources.length}
+                </span>
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {otherResources.map(r => (
+                <div key={r.id}>
                   {/* 타입별 뷰어 */}
-                  {r.type === 'video' && <VideoPlayer url={r.url} title={r.title} />}
                   {r.type === 'article' && <ArticleViewer url={r.url} title={r.title} />}
                   {r.type === 'github' && <GitHubViewer url={r.url} title={r.title} />}
                   {r.type === 'other' && (
@@ -778,6 +778,7 @@ export default function LearningPlayer({
                   )}
                 </div>
               ))}
+              </div>
             </div>
           )}
 
