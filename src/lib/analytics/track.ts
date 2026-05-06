@@ -18,6 +18,9 @@ export type EventName =
   | 'curriculum_published'
   | 'search_performed'
   | 'login_completed'
+  | 'interest_categories_selected'
+  | 'onboarding_completed'
+  | 'locale_switched'
 
 interface EventProperties {
   [key: string]: string | number | boolean | null | undefined

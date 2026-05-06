@@ -25,6 +25,22 @@ export async function GET(request: NextRequest) {
     )
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
+      // 신규 사용자 감지: onboarded_at IS NULL → 온보딩으로 이동
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('onboarded_at')
+          .eq('id', user.id)
+          .single()
+
+        const isNewUser = !profile?.onboarded_at
+        if (isNewUser) {
+          const nextParam = next !== '/' ? `?next=${encodeURIComponent(next)}` : ''
+          return NextResponse.redirect(`${origin}/onboarding${nextParam}`)
+        }
+      }
+
       return NextResponse.redirect(`${origin}${next}`)
     }
   }
