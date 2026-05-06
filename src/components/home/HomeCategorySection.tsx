@@ -4,13 +4,20 @@ import { useState } from 'react'
 import Link from 'next/link'
 import CurriculumCard from '@/components/curriculum/CurriculumCard'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
-import { SearchIcon } from '@/components/ui/icons'
+import { SearchIcon, AiIcon, CodeIcon, DesignIcon, BusinessIcon, ProductivityIcon } from '@/components/ui/icons'
+
+// 아이콘은 Client Component 내부에서 직접 관리 (Server→Client prop으로 함수 전달 불가)
+const CATEGORY_ICONS: Record<string, React.ComponentType<{ size?: number; style?: React.CSSProperties }>> = {
+  'AI·자동화': AiIcon,
+  '프로그래밍': CodeIcon,
+  '디자인': DesignIcon,
+  '비즈니스': BusinessIcon,
+  '생산성': ProductivityIcon,
+}
 
 interface Category {
   label: string
   value: string
-  icon?: string
-  Icon?: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
 }
 
 interface Props {
@@ -76,10 +83,8 @@ export default function HomeCategorySection({ curricula, categories }: Props) {
                   transition: 'all 150ms',
                 }}
               >
-                {cat.Icon ? (
-                  <cat.Icon size={16} style={{ flexShrink: 0 }} />
-                ) : cat.icon ? (
-                  <span style={{ fontSize: 16, lineHeight: 1 }}>{cat.icon}</span>
+                {CATEGORY_ICONS[cat.value] ? (
+                  (() => { const Icon = CATEGORY_ICONS[cat.value]; return <Icon size={16} style={{ flexShrink: 0 }} /> })()
                 ) : null}
                 <span style={{ flex: 1 }}>{cat.label}</span>
                 {isActive && (

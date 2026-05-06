@@ -5,16 +5,17 @@ import HomeCategorySection from '@/components/home/HomeCategorySection'
 import FooterLocale from '@/components/ui/FooterLocale'
 import FooterSocialLinks from '@/components/ui/FooterSocialLinks'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
-import { AiIcon, CodeIcon, DesignIcon, BusinessIcon, ProductivityIcon, CheckIcon, HeartIcon, SearchIcon, FlagIcon } from '@/components/ui/icons'
+import { CheckIcon, HeartIcon, SearchIcon, FlagIcon } from '@/components/ui/icons'
 
 /* ─────────────────── 카테고리 매핑 ─────────────────── */
-const SIDEBAR_CATEGORIES: { label: string; value: string; Icon?: React.ComponentType<{ size?: number; style?: React.CSSProperties }> }[] = [
+// Icon 함수 레퍼런스는 Server→Client prop 직렬화 불가 — 아이콘은 HomeCategorySection 내부에서 처리
+const SIDEBAR_CATEGORIES: { label: string; value: string }[] = [
   { label: '전체', value: '전체' },
-  { label: 'AI · 자동화', value: 'AI·자동화', Icon: AiIcon },
-  { label: '프로그래밍', value: '프로그래밍', Icon: CodeIcon },
-  { label: '디자인', value: '디자인', Icon: DesignIcon },
-  { label: '비즈니스', value: '비즈니스', Icon: BusinessIcon },
-  { label: '생산성', value: '생산성', Icon: ProductivityIcon },
+  { label: 'AI · 자동화', value: 'AI·자동화' },
+  { label: '프로그래밍', value: '프로그래밍' },
+  { label: '디자인', value: '디자인' },
+  { label: '비즈니스', value: '비즈니스' },
+  { label: '생산성', value: '생산성' },
 ]
 
 /* ─────────────────── 커뮤니티 더미 데이터 ─────────────────── */
