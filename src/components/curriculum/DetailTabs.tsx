@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import StepAccordion from '@/components/curriculum/StepAccordion'
+import { StarIcon, MessageCircleIcon, TargetIcon, CheckCircleIcon } from '@/components/ui/icons'
 
 interface Step {
   id: string
@@ -109,9 +110,9 @@ export default function DetailTabs({
                   width: 80, height: 80, flexShrink: 0,
                   background: 'var(--accent-light)', borderRadius: 14,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 36,
+                  color: 'var(--accent)',
                 }}>
-                  🤖
+                  <CheckCircleIcon size={20} style={{ color: 'var(--accent)' }} />
                 </div>
               </div>
             )}
@@ -220,7 +221,9 @@ export default function DetailTabs({
               </div>
             ) : (
               <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--text-tertiary)' }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>⭐</div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+                  <StarIcon size={48} style={{ color: 'var(--text-tertiary)' }} />
+                </div>
                 <p style={{ fontSize: 15 }}>아직 리뷰가 없어요</p>
                 <p style={{ fontSize: 13, marginTop: 6 }}>학습을 완료하고 첫 번째 리뷰를 남겨보세요</p>
               </div>
@@ -231,7 +234,9 @@ export default function DetailTabs({
         {/* Q&A 탭 */}
         {activeTab === 'qa' && (
           <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--text-tertiary)' }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>💬</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+              <MessageCircleIcon size={48} style={{ color: 'var(--text-tertiary)' }} />
+            </div>
             <p style={{ fontSize: 15 }}>Q&A 기능은 준비 중이에요</p>
             <p style={{ fontSize: 13, marginTop: 6 }}>학습 중 궁금한 점은 커뮤니티에서 질문해보세요</p>
           </div>
@@ -240,7 +245,9 @@ export default function DetailTabs({
         {/* 추천 탭 */}
         {activeTab === 'recommend' && (
           <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--text-tertiary)' }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>🎯</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+              <TargetIcon size={48} style={{ color: 'var(--text-tertiary)' }} />
+            </div>
             <p style={{ fontSize: 15 }}>함께 보면 좋은 커리큘럼</p>
             <p style={{ fontSize: 13, marginTop: 6 }}>추천 커리큘럼 기능은 준비 중이에요</p>
             <Link href="/" style={{
@@ -267,14 +274,15 @@ export default function DetailTabs({
         gap: 10,
         zIndex: 50,
       }}>
-        <button style={{
+        <button disabled style={{
           flex: 1, padding: '13px',
           borderRadius: 10,
           border: '1.5px solid var(--border)',
           background: 'transparent',
           color: 'var(--text-secondary)',
           fontWeight: 600, fontSize: 14,
-          cursor: 'pointer', fontFamily: 'inherit',
+          fontFamily: 'inherit',
+          opacity: 0.5, cursor: 'not-allowed',
         }}>
           미리보기 ▷
         </button>

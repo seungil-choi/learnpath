@@ -4,31 +4,13 @@ import Link from 'next/link'
 import { LevelBadge } from '@/components/ui/Badge'
 import ProgressBar from '@/components/ui/ProgressBar'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
+import { getCategoryGradient, getCategoryByLabel } from '@/lib/categories'
+import { ClockIcon, UsersIcon, ClipboardIcon } from '@/components/ui/icons'
 
 interface Props {
   curriculum: CurriculumWithCreator
   progress?: number
   rank?: number
-}
-
-const CATEGORY_ICON: Record<string, string> = {
-  'AI·자동화': '🤖',
-  '프로그래밍': '💻',
-  '디자인': '🎨',
-  '비즈니스': '💼',
-  '언어': '🌏',
-  '취미·라이프': '🌿',
-  '기타': '📦',
-}
-
-const CATEGORY_GRADIENT: Record<string, string> = {
-  'AI·자동화':  'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-  '프로그래밍': 'linear-gradient(135deg, #0284c7 0%, #5B5CF0 100%)',
-  '디자인':     'linear-gradient(135deg, #db2777 0%, #9333ea 100%)',
-  '비즈니스':   'linear-gradient(135deg, #059669 0%, #0891b2 100%)',
-  '언어':       'linear-gradient(135deg, #d97706 0%, #dc2626 100%)',
-  '취미·라이프': 'linear-gradient(135deg, #16a34a 0%, #0891b2 100%)',
-  '기타':       'linear-gradient(135deg, #4b5563 0%, #1f2937 100%)',
 }
 
 function formatDuration(minutes: number) {
@@ -41,8 +23,8 @@ function formatDuration(minutes: number) {
 
 export default function CurriculumCard({ curriculum, progress, rank }: Props) {
   const duration = formatDuration(curriculum.estimated_duration)
-  const catIcon = curriculum.category ? CATEGORY_ICON[curriculum.category] : null
-  const gradient = curriculum.category ? CATEGORY_GRADIENT[curriculum.category] : CATEGORY_GRADIENT['기타']
+  const gradient = getCategoryGradient(curriculum.category)
+  const CatIcon = getCategoryByLabel(curriculum.category).Icon
   const thumbnail = (curriculum as any).thumbnail_url as string | null
 
   return (
@@ -70,9 +52,7 @@ export default function CurriculumCard({ curriculum, progress, rank }: Props) {
               background: gradient,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <span style={{ fontSize: 40, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}>
-                {catIcon ?? '📚'}
-              </span>
+              <CatIcon size={40} style={{ color: 'rgba(255,255,255,0.85)', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }} />
             </div>
           )}
           {/* Duration pill overlay */}
@@ -85,18 +65,21 @@ export default function CurriculumCard({ curriculum, progress, rank }: Props) {
               padding: '3px 8px',
               borderRadius: 999,
               backdropFilter: 'blur(4px)',
+              display: 'flex', alignItems: 'center', gap: 4,
             }}>
-              ⏱ {duration}
+              <ClockIcon size={11} /> {duration}
             </div>
           )}
-          {/* Rank medal overlay */}
+          {/* Rank overlay */}
           {rank && rank <= 3 && (
             <div style={{
               position: 'absolute', top: 8, left: 8,
-              fontSize: 20,
+              fontSize: 11, fontWeight: 800, color: '#fff',
+              background: rank === 1 ? '#f59e0b' : rank === 2 ? '#9ca3af' : '#b45309',
+              borderRadius: 4, padding: '2px 7px',
               filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.3))',
             }}>
-              {rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉'}
+              {rank}위
             </div>
           )}
         </div>
@@ -115,12 +98,17 @@ export default function CurriculumCard({ curriculum, progress, rank }: Props) {
                 borderRadius: 4,
                 color: 'var(--text-tertiary)',
                 fontWeight: 500,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 3,
               }}>
-                {catIcon} {curriculum.category}
+                <CatIcon size={11} /> {curriculum.category}
               </span>
             )}
             {curriculum.original_id && (
-              <span style={{ fontSize: 11, color: 'var(--accent)', marginLeft: 'auto' }}>📋 내 버전</span>
+              <span style={{ fontSize: 11, color: 'var(--accent)', marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 3 }}>
+                <ClipboardIcon size={11} /> 내 버전
+              </span>
             )}
           </div>
 
@@ -172,8 +160,8 @@ export default function CurriculumCard({ curriculum, progress, rank }: Props) {
             marginTop: 'auto',
           }}>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', minWidth: 0 }}>
-              <span style={{ fontSize: 12, color: 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>
-                👥 {curriculum.enrollment_count.toLocaleString()}명
+              <span style={{ fontSize: 12, color: 'var(--text-tertiary)', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                <UsersIcon size={12} /> {curriculum.enrollment_count.toLocaleString()}명
               </span>
               {curriculum.avg_rating > 0 && (
                 <span style={{ fontSize: 12, color: '#f59e0b', whiteSpace: 'nowrap', fontWeight: 600 }}>

@@ -2,17 +2,10 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import ProfileEditForm from '@/components/profile/ProfileEditForm'
 import DemoBanner from '@/components/ui/DemoBanner'
+import { getCategoryGradient } from '@/lib/categories'
+import { PencilIcon } from '@/components/ui/icons'
 
-const GRADIENT: Record<string, string> = {
-  'AI·자동화':  'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-  '프로그래밍': 'linear-gradient(135deg, #0284c7 0%, #0891b2 100%)',
-  '디자인':     'linear-gradient(135deg, #db2777 0%, #9333ea 100%)',
-  '비즈니스':   'linear-gradient(135deg, #059669 0%, #0284c7 100%)',
-  '언어':       'linear-gradient(135deg, #d97706 0%, #dc2626 100%)',
-  '취미·라이프': 'linear-gradient(135deg, #16a34a 0%, #0891b2 100%)',
-  '기타':       'linear-gradient(135deg, #4b5563 0%, #1f2937 100%)',
-}
-const grad = (cat?: string) => GRADIENT[cat ?? '기타'] ?? GRADIENT['기타']
+const grad = (cat?: string) => getCategoryGradient(cat)
 
 function formatDate(d: string) {
   const dt = new Date(d)
@@ -201,7 +194,9 @@ function MyPageLayout({
         </div>
         {myCurricula.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 24px', border: '1px dashed var(--border)', borderRadius: 16 }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>✏️</div>
+            <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+              <PencilIcon size={48} style={{ color: 'var(--text-tertiary)' }} />
+            </div>
             <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 20 }}>아직 만든 커리큘럼이 없어요</p>
             <Link href={isDemo ? '/auth' : '/create'} style={{ display: 'inline-block', padding: '10px 22px', borderRadius: 9, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 14 }}>
               커리큘럼 만들기 →

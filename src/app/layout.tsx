@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/layout/Header'
 import MobileBottomNav from '@/components/layout/MobileBottomNav'
 import { LocaleProvider } from '@/lib/i18n/context'
+import { ToastProvider } from '@/components/ui/Toast'
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
@@ -21,9 +22,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" className={notoSansKR.className}>
       <body className="min-h-screen flex flex-col">
         <LocaleProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <MobileBottomNav />
+          <ToastProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <MobileBottomNav />
+          </ToastProvider>
         </LocaleProvider>
       </body>
     </html>

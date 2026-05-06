@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useToast } from '@/components/ui/Toast'
 
 interface Props {
   curriculumId: string
@@ -13,6 +14,7 @@ export default function ForkButton({ curriculumId, userId }: Props) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+  const { showToast } = useToast()
 
   const handleFork = async () => {
     if (!userId) {
@@ -78,9 +80,10 @@ export default function ForkButton({ curriculumId, userId }: Props) {
         }
       }
 
+      showToast('커리큘럼을 내 목록으로 가져왔어요!', 'success')
       router.push(`/curriculum/${forked.id}/edit`)
     } catch (err) {
-      alert('가져오기 중 오류가 발생했습니다.')
+      showToast('가져오기 중 오류가 발생했습니다. 다시 시도해주세요.', 'error')
     } finally {
       setLoading(false)
     }

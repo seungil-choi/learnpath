@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import ProgressBar from '@/components/ui/ProgressBar'
 import { track } from '@/lib/analytics/track'
 import type { StepWithResources, Progress } from '@/lib/supabase/types'
+import { MenuIcon, CheckIcon, CheckCircleIcon, MessageCircleIcon, BookOpenIcon, SparkleIcon } from '@/components/ui/icons'
 
 interface Props {
   curriculum: { id: string; title: string }
@@ -198,8 +199,9 @@ export default function LearningPlayer({
           background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)',
           marginBottom: 10, overflow: 'hidden',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#fff',
         }}>
-          <span style={{ fontSize: 28 }}>📚</span>
+          <BookOpenIcon size={36} style={{ color: '#fff' }} />
         </div>
 
         <p style={{
@@ -362,7 +364,9 @@ export default function LearningPlayer({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
           <p style={{ fontSize: 13, fontWeight: 700 }}>나의 학습 노트</p>
           {noteSaved && (
-            <span style={{ fontSize: 11, color: 'var(--success)', fontWeight: 600 }}>✓ 저장됨</span>
+            <span style={{ fontSize: 11, color: 'var(--success)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 3 }}>
+              <CheckIcon size={14} style={{ color: 'var(--success)' }} /> 저장됨
+            </span>
           )}
         </div>
         <textarea
@@ -395,14 +399,20 @@ export default function LearningPlayer({
         <p style={{ fontSize: 12, color: 'var(--text-tertiary)', lineHeight: '18px', marginBottom: 10 }}>
           Claude가 이 단계의 핵심 내용을 요약해드려요.
         </p>
-        <button style={{
-          width: '100%', padding: '9px 0',
-          borderRadius: 8, border: '1px solid var(--accent)',
-          color: 'var(--accent)', background: 'var(--accent-light)',
-          fontSize: 13, fontWeight: 600, cursor: 'pointer',
-          fontFamily: 'inherit', transition: 'background 150ms',
-        }}>
-          ✦ 이 단계 요약하기
+        <button
+          disabled
+          title="준비 중인 기능이에요"
+          style={{
+            width: '100%', padding: '9px 0',
+            borderRadius: 8, border: '1px solid var(--accent)',
+            color: 'var(--accent)', background: 'var(--accent-light)',
+            fontSize: 13, fontWeight: 600,
+            fontFamily: 'inherit', transition: 'background 150ms',
+            opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          }}
+        >
+          <SparkleIcon size={12} /> 이 단계 요약하기
         </button>
       </div>
 
@@ -482,11 +492,11 @@ export default function LearningPlayer({
               borderRadius: 6,
               background: 'transparent',
               cursor: 'pointer',
-              fontSize: 16,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontFamily: 'inherit',
             }}
           >
-            ☰
+            <MenuIcon size={20} />
           </button>
           <div style={{ flex: 1, minWidth: 0 }}>
             <ProgressBar percent={progressPercent} showLabel />
@@ -693,7 +703,7 @@ export default function LearningPlayer({
                   cursor: 'pointer', fontFamily: 'inherit',
                 }}
               >
-                {isCurrentCompleted ? '✓ 완료됨' : '단계 완료 표시'}
+                {isCurrentCompleted ? <><CheckIcon size={14} /> 완료됨</> : '단계 완료 표시'}
               </button>
             )}
           </div>
@@ -707,7 +717,9 @@ export default function LearningPlayer({
               borderRadius: 14, padding: '28px 24px',
               textAlign: 'center',
             }}>
-              <div style={{ fontSize: 44, marginBottom: 12 }}>🎉</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+                <CheckCircleIcon size={28} style={{ color: '#15803d' }} />
+              </div>
               <h3 style={{ marginBottom: 6, color: '#15803d', fontSize: 20 }}>커리큘럼 완료!</h3>
               <p style={{ fontSize: 14, color: '#166534', marginBottom: 20 }}>
                 모든 단계를 마쳤습니다. 수고하셨어요!
@@ -790,7 +802,7 @@ export default function LearningPlayer({
                     fontSize: 11, fontWeight: 700,
                     color: isCompleted || isCurrent ? '#fff' : 'var(--text-tertiary)',
                   }}>
-                    {isCompleted ? '✓' : idx + 1}
+                    {isCompleted ? <CheckIcon size={14} style={{ color: '#fff' }} /> : idx + 1}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{
@@ -850,7 +862,9 @@ export default function LearningPlayer({
         {/* Q&A panel */}
         {mobileTab === 'qa' && (
           <div style={{ padding: '24px 16px', textAlign: 'center', background: '#fff' }}>
-            <div style={{ fontSize: 32, marginBottom: 8 }}>💬</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
+              <MessageCircleIcon size={40} style={{ color: 'var(--text-tertiary)' }} />
+            </div>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 4 }}>Q&A 기능은 준비 중이에요</p>
             <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>커뮤니티에서 질문해보세요</p>
           </div>

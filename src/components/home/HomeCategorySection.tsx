@@ -4,11 +4,13 @@ import { useState } from 'react'
 import Link from 'next/link'
 import CurriculumCard from '@/components/curriculum/CurriculumCard'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
+import { SearchIcon } from '@/components/ui/icons'
 
 interface Category {
   label: string
   value: string
-  icon: string
+  icon?: string
+  Icon?: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
 }
 
 interface Props {
@@ -74,7 +76,11 @@ export default function HomeCategorySection({ curricula, categories }: Props) {
                   transition: 'all 150ms',
                 }}
               >
-                <span style={{ fontSize: 16, lineHeight: 1 }}>{cat.icon}</span>
+                {cat.Icon ? (
+                  <cat.Icon size={16} style={{ flexShrink: 0 }} />
+                ) : cat.icon ? (
+                  <span style={{ fontSize: 16, lineHeight: 1 }}>{cat.icon}</span>
+                ) : null}
                 <span style={{ flex: 1 }}>{cat.label}</span>
                 {isActive && (
                   <div style={{
@@ -139,7 +145,7 @@ export default function HomeCategorySection({ curricula, categories }: Props) {
             textAlign: 'center', padding: '60px 24px',
             border: '1px dashed var(--border)', borderRadius: 14,
           }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div>
+            <SearchIcon size={48} style={{ color: 'var(--text-tertiary)', marginBottom: 12 }} />
             <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 6 }}>
               해당 카테고리에 커리큘럼이 없어요
             </p>

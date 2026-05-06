@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useToast } from '@/components/ui/Toast'
 import { createClient } from '@/lib/supabase/client'
 import { track } from '@/lib/analytics/track'
 import { slugify, uniqueSlug } from '@/lib/slugify'
 import type { CurriculumDetail } from '@/lib/supabase/types'
+import { PlusCircleIcon, RocketIcon, BookOpenIcon, AlertCircleIcon, CheckCircleIcon } from '@/components/ui/icons'
 
 /* ─── 타입 ─── */
 interface StepDraft {
@@ -31,9 +33,9 @@ interface Props {
 /* ─── 상수 ─── */
 const CATEGORIES = ['AI·자동화', '프로그래밍', '디자인', '비즈니스', '생산성', '기타']
 const LEVELS = [
-  { value: 'beginner', label: '초급 (입문자)', icon: '🌱' },
-  { value: 'intermediate', label: '중급 (기본 지식)', icon: '📗' },
-  { value: 'advanced', label: '고급 (실무 경험자)', icon: '🔥' },
+  { value: 'beginner', label: '초급 (입문자)', icon: null },
+  { value: 'intermediate', label: '중급 (기본 지식)', icon: null },
+  { value: 'advanced', label: '고급 (실무 경험자)', icon: <RocketIcon size={16} /> },
 ]
 const DURATION_OPTIONS = [
   { label: '1시간 미만', value: '50' },
@@ -157,6 +159,7 @@ function TagInput({
 export default function CreateWizard({ userId, curriculum }: Props) {
   const router = useRouter()
   const supabase = createClient()
+  const { showToast } = useToast()
 
   /* ── 편집 모드: duration을 옵션에서 가장 가까운 값으로 매핑 ── */
   const initDuration = (() => {
@@ -230,8 +233,8 @@ export default function CreateWizard({ userId, curriculum }: Props) {
 
   /* ── Save ── */
   const save = async (publish: boolean) => {
-    if (!title.trim()) { alert('제목을 입력하세요.'); return }
-    if (steps.some(s => !s.title.trim())) { alert('모든 Step에 제목을 입력하세요.'); return }
+    if (!title.trim()) { showToast('제목을 입력하세요.', 'error'); return }
+    if (steps.some(s => !s.title.trim())) { showToast('모든 Step에 제목을 입력하세요.', 'error'); return }
     setSaving(true)
     try {
       let curriculumId = curriculum?.id
@@ -305,9 +308,10 @@ export default function CreateWizard({ userId, curriculum }: Props) {
       } else if (!curriculum?.id) {
         track('curriculum_draft_created', { step_count: steps.length, category }, curriculumId)
       }
+      showToast(publish ? '커리큘럼이 발행되었어요! 🎉' : '초안이 저장되었어요.', 'success')
       router.push(`/curriculum/${curriculumId}`)
     } catch {
-      alert('저장 중 오류가 발생했습니다.')
+      showToast('저장 중 오류가 발생했습니다. 다시 시도해주세요.', 'error')
     } finally {
       setSaving(false)
     }
@@ -476,7 +480,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
           ;(e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)'
         }}
       >
-        ⊕ Step 추가하기
+        <PlusCircleIcon size={16} /> Step 추가하기
       </button>
     </div>,
 
@@ -541,13 +545,13 @@ export default function CreateWizard({ userId, curriculum }: Props) {
         <div style={{
           aspectRatio: '16/9',
           background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32,
-          overflow: 'hidden',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          overflow: 'hidden', color: '#fff',
         }}>
           {thumbnailUrl
             // eslint-disable-next-line @next/next/no-img-element
             ? <img src={thumbnailUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.75 }} />
-            : '📚'}
+            : <BookOpenIcon size={28} style={{ color: '#fff' }} />}
         </div>
         <div style={{ padding: 16 }}>
           {category && <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', marginBottom: 4 }}>{category}</p>}
@@ -712,8 +716,9 @@ export default function CreateWizard({ userId, curriculum }: Props) {
                     border: 'none', background: 'var(--accent)', color: '#fff',
                     fontWeight: 700, fontSize: 14, cursor: 'pointer',
                     fontFamily: 'inherit', opacity: saving ? 0.6 : 1,
+                    display: 'flex', alignItems: 'center', gap: 6,
                   }}>
-                    {saving ? '발행 중...' : '🚀 발행하기'}
+                    {saving ? '발행 중...' : <><RocketIcon size={16} /> 발행하기</>}
                   </button>
                 </>
               ) : (
@@ -749,8 +754,8 @@ export default function CreateWizard({ userId, curriculum }: Props) {
 
         {/* Tips */}
         <div style={{ marginBottom: 20 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 12 }}>
-            커리큘럼 구성 팁 💡
+          <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <AlertCircleIcon size={14} style={{ color: 'var(--accent)' }} /> 커리큘럼 구성 팁
           </p>
           {(TIPS[wizardStep] ?? []).map((tip, i) => (
             <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 10 }}>

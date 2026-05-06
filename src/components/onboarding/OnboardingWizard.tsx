@@ -5,15 +5,16 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { track } from '@/lib/analytics/track'
+import { AiIcon, CodeIcon, DesignIcon, BusinessIcon, ProductivityIcon, MarketingIcon, UserIcon, MapIcon, RocketIcon, BookOpenIcon } from '@/components/ui/icons'
 
 /* ─── 상수 ─── */
 const CATEGORIES = [
-  { key: 'ai',           label: 'AI · 자동화', emoji: '🤖' },
-  { key: 'programming',  label: '프로그래밍',   emoji: '💻' },
-  { key: 'design',       label: '디자인',       emoji: '🎨' },
-  { key: 'business',     label: '비즈니스',     emoji: '📊' },
-  { key: 'productivity', label: '생산성',       emoji: '⚡' },
-  { key: 'marketing',    label: '디지털마케팅', emoji: '📣' },
+  { key: 'ai',           label: 'AI · 자동화', Icon: AiIcon },
+  { key: 'programming',  label: '프로그래밍',   Icon: CodeIcon },
+  { key: 'design',       label: '디자인',       Icon: DesignIcon },
+  { key: 'business',     label: '비즈니스',     Icon: BusinessIcon },
+  { key: 'productivity', label: '생산성',       Icon: ProductivityIcon },
+  { key: 'marketing',    label: '디지털마케팅', Icon: MarketingIcon },
 ]
 
 const LEVEL_LABEL: Record<string, string> = { beginner: '초급', intermediate: '중급', advanced: '고급' }
@@ -104,7 +105,7 @@ export default function OnboardingWizard({
       <StepIndicator current={0} />
       <div style={cardStyle}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>👋</div>
+          <UserIcon size={52} style={{ color: 'var(--accent)', marginBottom: 16 }} />
           <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8, letterSpacing: '-0.5px' }}>
             어떻게 불러드리면 좋을까요?
           </h1>
@@ -158,7 +159,7 @@ export default function OnboardingWizard({
       <StepIndicator current={1} />
       <div style={cardStyle}>
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🗺️</div>
+          <MapIcon size={52} style={{ color: 'var(--accent)', marginBottom: 16 }} />
           <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8, letterSpacing: '-0.5px' }}>
             관심 있는 주제를 골라주세요
           </h1>
@@ -188,7 +189,7 @@ export default function OnboardingWizard({
                   fontFamily: 'inherit',
                 }}
               >
-                <span style={{ fontSize: 28 }}>{cat.emoji}</span>
+                <cat.Icon size={28} style={{ color: selected ? 'var(--accent)' : 'var(--text-secondary)' }} />
                 <span style={{
                   fontSize: 12, fontWeight: selected ? 700 : 500,
                   color: selected ? accent : 'var(--text-secondary)',
@@ -235,7 +236,7 @@ export default function OnboardingWizard({
       <StepIndicator current={2} />
       <div style={{ ...cardStyle, maxWidth: 680 }}>
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🚀</div>
+          <RocketIcon size={52} style={{ color: 'var(--accent)', marginBottom: 16 }} />
           <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8, letterSpacing: '-0.5px' }}>
             {name.trim() ? `${name.trim()}, 지금 바로 시작할 수 있는 Path` : '지금 바로 시작할 수 있는 Path'}
           </h1>
@@ -283,13 +284,9 @@ export default function OnboardingWizard({
                     width: 48, height: 48, borderRadius: 12, flexShrink: 0,
                     background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 22,
+                    color: '#fff',
                   }}>
-                    {curr.category?.includes('AI') ? '🤖' :
-                     curr.category?.includes('프로그래밍') ? '💻' :
-                     curr.category?.includes('디자인') ? '🎨' :
-                     curr.category?.includes('비즈니스') ? '📊' :
-                     curr.category?.includes('생산성') ? '⚡' : '📚'}
+                    <BookOpenIcon size={22} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 15, fontWeight: 700, marginBottom: 4, color: 'var(--text-primary)' }}>
@@ -331,7 +328,7 @@ export default function OnboardingWizard({
                 display: 'block', textAlign: 'center', textDecoration: 'none',
               }}
             >
-              첫 번째 추천 시작하기 🚀
+              <RocketIcon size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />첫 번째 추천 시작하기
             </Link>
           )}
           <button

@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { getCategoryGradient } from '@/lib/categories'
+import { BookOpenIcon, BookmarkIcon, ClockIcon, PencilIcon } from '@/components/ui/icons'
 
 interface Stats {
   inProgressCount: number
@@ -26,16 +28,7 @@ interface Props {
 
 type Tab = 'all' | 'inprogress' | 'completed' | 'saved' | 'drafts'
 
-const GRADIENT: Record<string, string> = {
-  'AI·자동화':  'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-  '프로그래밍': 'linear-gradient(135deg, #0284c7 0%, #0891b2 100%)',
-  '디자인':     'linear-gradient(135deg, #db2777 0%, #9333ea 100%)',
-  '비즈니스':   'linear-gradient(135deg, #059669 0%, #0284c7 100%)',
-  '언어':       'linear-gradient(135deg, #d97706 0%, #dc2626 100%)',
-  '취미·라이프': 'linear-gradient(135deg, #16a34a 0%, #0891b2 100%)',
-  '기타':       'linear-gradient(135deg, #4b5563 0%, #1f2937 100%)',
-}
-const grad = (cat?: string) => GRADIENT[cat ?? '기타'] ?? GRADIENT['기타']
+const grad = (cat?: string) => getCategoryGradient(cat)
 
 function formatDate(d: string) {
   const dt = new Date(d)
@@ -93,14 +86,19 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
       }}>
         <CircleProgress percent={stats.overallPercent} />
         <div style={{ display: 'flex', gap: 32, flex: 1, flexWrap: 'wrap' }}>
-          {[
-            { icon: '📚', label: '진행 중', value: `${stats.inProgressCount}개` },
-            { icon: '✓', label: '완료', value: `${stats.completedCount}개`, green: true },
-            { icon: '🔖', label: '저장함', value: `${stats.savedCount}개` },
-            { icon: '⏱', label: '학습 시간', value: stats.totalTime },
-          ].map(item => (
+          {([
+            { Icon: BookOpenIcon, label: '진행 중', value: `${stats.inProgressCount}개` },
+            { Icon: null, label: '완료', value: `${stats.completedCount}개`, green: true },
+            { Icon: BookmarkIcon, label: '저장함', value: `${stats.savedCount}개` },
+            { Icon: ClockIcon, label: '학습 시간', value: stats.totalTime },
+          ] as Array<{ Icon: React.FC<{ size?: number; style?: React.CSSProperties }> | null; label: string; value: string; green?: boolean }>).map(item => (
             <div key={item.label} style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 64 }}>
-              <span style={{ fontSize: 20 }}>{item.icon}</span>
+              <span style={{ fontSize: 20, display: 'flex', alignItems: 'center', color: item.green ? 'var(--success)' : 'var(--text-secondary)' }}>
+                {item.green
+                  ? <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--success)' }}>✓</span>
+                  : item.Icon && <item.Icon size={20} />
+                }
+              </span>
               <span style={{ fontSize: 20, fontWeight: 900, lineHeight: 1, color: item.green ? 'var(--success)' : 'var(--text-primary)' }}>
                 {item.value}
               </span>
@@ -149,7 +147,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
             </div>
           )}
           {inProgress.length === 0 ? (
-            <EmptyState icon="📖" message="진행 중인 커리큘럼이 없어요" cta="커리큘럼 탐색하기" href="/explore" />
+            <EmptyState icon={<BookOpenIcon size={48} style={{ color: 'var(--text-tertiary)' }} />} message="진행 중인 커리큘럼이 없어요" cta="커리큘럼 탐색하기" href="/explore" />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {(activeTab === 'all' ? inProgress.slice(0, 3) : inProgress).map((p: any) => {
@@ -209,7 +207,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
             </div>
           )}
           {completed.length === 0 ? (
-            activeTab === 'completed' && <EmptyState icon="🎯" message="아직 완료한 커리큘럼이 없어요" cta="학습 시작하기" href="/explore" />
+            activeTab === 'completed' && <EmptyState icon={<BookOpenIcon size={48} style={{ color: 'var(--text-tertiary)' }} />} message="아직 완료한 커리큘럼이 없어요" cta="학습 시작하기" href="/explore" />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {(activeTab === 'all' ? completed.slice(0, 3) : completed).map((p: any) => {
@@ -257,7 +255,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
             </div>
           )}
           {saves.length === 0 ? (
-            activeTab === 'saved' && <EmptyState icon="🔖" message="저장한 커리큘럼이 없어요" cta="커리큘럼 탐색하기" href="/explore" desc="관심 있는 커리큘럼을 저장하면 여기에 표시돼요" />
+            activeTab === 'saved' && <EmptyState icon={<BookmarkIcon size={48} style={{ color: 'var(--text-tertiary)' }} />} message="저장한 커리큘럼이 없어요" cta="커리큘럼 탐색하기" href="/explore" desc="관심 있는 커리큘럼을 저장하면 여기에 표시돼요" />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {(activeTab === 'all' ? saves.slice(0, 3) : saves).map((s: any) => {
@@ -299,7 +297,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
             </div>
           )}
           {drafts.length === 0 ? (
-            activeTab === 'drafts' && <EmptyState icon="✏️" message="초안이 없어요" cta="새 커리큘럼 만들기" href="/create" />
+            activeTab === 'drafts' && <EmptyState icon={<PencilIcon size={48} style={{ color: 'var(--text-tertiary)' }} />} message="초안이 없어요" cta="새 커리큘럼 만들기" href="/create" />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {drafts.map((cur: any) => (
@@ -326,7 +324,9 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
       {/* 전부 비어있을 때 */}
       {activeTab === 'all' && inProgress.length === 0 && completed.length === 0 && saves.length === 0 && drafts.length === 0 && (
         <div style={{ textAlign: 'center', padding: '80px 24px', border: '1px dashed var(--border)', borderRadius: 20 }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🌱</div>
+          <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
+            <BookOpenIcon size={48} style={{ color: 'var(--text-tertiary)' }} />
+          </div>
           <h2 style={{ fontSize: 20, marginBottom: 8 }}>학습을 시작해보세요!</h2>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 28 }}>LearnPath에서 첫 번째 커리큘럼을 발견하고 시작해보세요.</p>
           <Link href="/explore" style={{ display: 'inline-block', padding: '12px 24px', borderRadius: 10, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
@@ -338,10 +338,10 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
   )
 }
 
-function EmptyState({ icon, message, desc, cta, href }: { icon: string; message: string; desc?: string; cta: string; href: string }) {
+function EmptyState({ icon, message, desc, cta, href }: { icon: React.ReactNode; message: string; desc?: string; cta: string; href: string }) {
   return (
     <div style={{ textAlign: 'center', padding: '48px 24px', border: '1px dashed var(--border)', borderRadius: 14 }}>
-      <div style={{ fontSize: 36, marginBottom: 12 }}>{icon}</div>
+      <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>{icon}</div>
       <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: desc ? 6 : 20 }}>{message}</p>
       {desc && <p style={{ fontSize: 13, color: 'var(--text-tertiary)', marginBottom: 20 }}>{desc}</p>}
       <Link href={href} style={{ display: 'inline-block', padding: '9px 18px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: 13 }}>

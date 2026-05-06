@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useToast } from '@/components/ui/Toast'
 import { createClient } from '@/lib/supabase/client'
 import { slugify, uniqueSlug } from '@/lib/slugify'
 import type { CurriculumDetail } from '@/lib/supabase/types'
@@ -47,6 +48,7 @@ function emptyResource(): ResourceDraft {
 export default function CurriculumEditor({ userId, curriculum }: Props) {
   const router = useRouter()
   const supabase = createClient()
+  const { showToast } = useToast()
 
   const [title, setTitle] = useState(curriculum?.title ?? '')
   const [description, setDescription] = useState(curriculum?.description ?? '')
@@ -103,8 +105,8 @@ export default function CurriculumEditor({ userId, curriculum }: Props) {
   }
 
   const save = async (publish: boolean) => {
-    if (!title.trim()) { alert('제목을 입력하세요.'); return }
-    if (steps.some(s => !s.title.trim())) { alert('모든 Step에 제목을 입력하세요.'); return }
+    if (!title.trim()) { showToast('제목을 입력하세요.', 'error'); return }
+    if (steps.some(s => !s.title.trim())) { showToast('모든 Step에 제목을 입력하세요.', 'error'); return }
 
     publish ? setPublishing(true) : setSaving(true)
 
@@ -186,9 +188,10 @@ export default function CurriculumEditor({ userId, curriculum }: Props) {
         }
       }
 
+      showToast(publish ? '커리큘럼이 발행되었어요! 🎉' : '초안이 저장되었어요.', 'success')
       router.push(`/curriculum/${curriculumId}`)
     } catch (err) {
-      alert('저장 중 오류가 발생했습니다.')
+      showToast('저장 중 오류가 발생했습니다. 다시 시도해주세요.', 'error')
     } finally {
       setSaving(false)
       setPublishing(false)

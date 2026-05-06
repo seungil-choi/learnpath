@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
+import { FileTextIcon, GitHubIcon, LinkIcon, ClockIcon, VideoIcon } from '@/components/ui/icons'
 
 interface Resource {
   id: string
@@ -24,11 +25,11 @@ interface Props {
   curriculumId: string
 }
 
-const RESOURCE_TYPE_ICON: Record<string, string> = {
-  video: '▶',
-  article: '📄',
-  github: '⌥',
-  other: '🔗',
+const RESOURCE_TYPE_ICON: Record<string, React.ReactNode> = {
+  video: <VideoIcon size={14} />,
+  article: <FileTextIcon size={14} />,
+  github: <GitHubIcon size={14} />,
+  other: <LinkIcon size={14} />,
 }
 
 const RESOURCE_TYPE_LABEL: Record<string, string> = {
@@ -109,13 +110,13 @@ export default function StepAccordion({ steps, completedStepIds, curriculumId }:
                 {!isOpen && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
                     {dur && (
-                      <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>
-                        ⏱ {dur}분
+                      <span style={{ fontSize: 11, color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: 3 }}>
+                        <ClockIcon size={12} /> {dur}분
                       </span>
                     )}
                     {step.resources.length > 0 && (
-                      <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>
-                        📎 자료 {step.resources.length}개
+                      <span style={{ fontSize: 11, color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: 3 }}>
+                        <FileTextIcon size={12} /> 자료 {step.resources.length}개
                       </span>
                     )}
                   </div>

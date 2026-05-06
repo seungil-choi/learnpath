@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
+import { getCategoryGradient } from '@/lib/categories'
+import { ClockIcon, UsersIcon, SearchIcon } from '@/components/ui/icons'
 
 /* ─ 타입 ─ */
 interface InitialParams {
@@ -46,16 +48,6 @@ const SORTS = [
 
 const LEVEL_LABEL: Record<string, string> = { beginner: '초급', intermediate: '중급', advanced: '고급' }
 
-const CATEGORY_GRADIENT: Record<string, string> = {
-  'AI·자동화':  'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-  '프로그래밍': 'linear-gradient(135deg, #0284c7 0%, #0891b2 100%)',
-  '디자인':     'linear-gradient(135deg, #db2777 0%, #9333ea 100%)',
-  '비즈니스':   'linear-gradient(135deg, #059669 0%, #0284c7 100%)',
-  '언어':       'linear-gradient(135deg, #d97706 0%, #dc2626 100%)',
-  '취미·라이프': 'linear-gradient(135deg, #16a34a 0%, #0891b2 100%)',
-  '기타':       'linear-gradient(135deg, #4b5563 0%, #1f2937 100%)',
-}
-
 function formatDuration(min: number) {
   if (!min) return null
   const h = Math.floor(min / 60), m = min % 60
@@ -65,7 +57,7 @@ function formatDuration(min: number) {
 function CurriculumCardGrid({ c }: { c: CurriculumWithCreator }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const thumb = (c as any).thumbnail_url as string | null
-  const grad = c.category ? CATEGORY_GRADIENT[c.category] : CATEGORY_GRADIENT['기타']
+  const grad = getCategoryGradient(c.category)
   const dur = formatDuration(c.estimated_duration)
   return (
     <Link href={`/curriculum/${c.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
@@ -117,7 +109,7 @@ function CurriculumCardGrid({ c }: { c: CurriculumWithCreator }) {
 function CurriculumCardList({ c }: { c: CurriculumWithCreator }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const thumb = (c as any).thumbnail_url as string | null
-  const grad = c.category ? CATEGORY_GRADIENT[c.category] : CATEGORY_GRADIENT['기타']
+  const grad = getCategoryGradient(c.category)
   const dur = formatDuration(c.estimated_duration)
   return (
     <Link href={`/curriculum/${c.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -164,8 +156,8 @@ function CurriculumCardList({ c }: { c: CurriculumWithCreator }) {
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 13, color: 'var(--text-tertiary)' }}>
             {c.avg_rating > 0 && <span style={{ color: '#f59e0b', fontWeight: 700 }}>★ {c.avg_rating.toFixed(1)}</span>}
-            {dur && <span>⏱ {dur}</span>}
-            <span>👥 {c.enrollment_count.toLocaleString()}명</span>
+            {dur && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><ClockIcon size={13} /> {dur}</span>}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><UsersIcon size={13} /> {c.enrollment_count.toLocaleString()}명</span>
           </div>
         </div>
         {/* Save button */}
@@ -423,7 +415,9 @@ export default function ExploreClient({ curricula, initialParams }: Props) {
           {/* Grid / List */}
           {curricula.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 24px' }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
+              <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
+                <SearchIcon size={48} style={{ color: 'var(--text-tertiary)' }} />
+              </div>
               <p style={{ fontSize: 16, color: 'var(--text-secondary)', marginBottom: 8 }}>검색 결과가 없어요</p>
               <p style={{ fontSize: 14, color: 'var(--text-tertiary)', marginBottom: 24 }}>다른 키워드나 필터로 찾아보세요</p>
               <button onClick={handleReset} style={{

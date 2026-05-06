@@ -5,15 +5,16 @@ import HomeCategorySection from '@/components/home/HomeCategorySection'
 import FooterLocale from '@/components/ui/FooterLocale'
 import FooterSocialLinks from '@/components/ui/FooterSocialLinks'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
+import { AiIcon, CodeIcon, DesignIcon, BusinessIcon, ProductivityIcon, CheckIcon, HeartIcon, SearchIcon, FlagIcon } from '@/components/ui/icons'
 
 /* ─────────────────── 카테고리 매핑 ─────────────────── */
-const SIDEBAR_CATEGORIES = [
-  { label: '전체', value: '전체', icon: '🔥' },
-  { label: 'AI · 자동화', value: 'AI·자동화', icon: '🤖' },
-  { label: '프로그래밍', value: '프로그래밍', icon: '💻' },
-  { label: '디자인', value: '디자인', icon: '🎨' },
-  { label: '비즈니스', value: '비즈니스', icon: '💼' },
-  { label: '생산성', value: '생산성', icon: '⚡' },
+const SIDEBAR_CATEGORIES: { label: string; value: string; Icon?: React.ComponentType<{ size?: number; style?: React.CSSProperties }> }[] = [
+  { label: '전체', value: '전체' },
+  { label: 'AI · 자동화', value: 'AI·자동화', Icon: AiIcon },
+  { label: '프로그래밍', value: '프로그래밍', Icon: CodeIcon },
+  { label: '디자인', value: '디자인', Icon: DesignIcon },
+  { label: '비즈니스', value: '비즈니스', Icon: BusinessIcon },
+  { label: '생산성', value: '생산성', Icon: ProductivityIcon },
 ]
 
 /* ─────────────────── 커뮤니티 더미 데이터 ─────────────────── */
@@ -96,7 +97,7 @@ export default async function HomePage() {
               marginBottom: 24,
               letterSpacing: '0.2px',
             }}>
-              <span>✦</span> 나만의 속도로, 체계적으로
+              <span>•</span> 나만의 속도로, 체계적으로
             </div>
 
             <h1 style={{
@@ -164,12 +165,12 @@ export default async function HomePage() {
             {/* Feature badges */}
             <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
               {[
-                { icon: '✓', label: '검증된 커리큘럼' },
-                { icon: '✓', label: '개인 맞춤 추천' },
-                { icon: '✓', label: '전문 성장 추적' },
-                { icon: '✓', label: '커뮤니티 연계' },
-              ].map(f => (
-                <div key={f.label} style={{
+                '검증된 커리큘럼',
+                '개인 맞춤 추천',
+                '전문 성장 추적',
+                '커뮤니티 연계',
+              ].map(label => (
+                <div key={label} style={{
                   display: 'flex', alignItems: 'center', gap: 6,
                   fontSize: 13, color: 'var(--text-secondary)',
                 }}>
@@ -177,11 +178,11 @@ export default async function HomePage() {
                     width: 18, height: 18, borderRadius: 999,
                     background: 'var(--accent)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 10, color: '#fff', fontWeight: 700, flexShrink: 0,
+                    color: '#fff', flexShrink: 0,
                   }}>
-                    {f.icon}
+                    <CheckIcon size={10} />
                   </div>
-                  {f.label}
+                  {label}
                 </div>
               ))}
             </div>
@@ -244,8 +245,10 @@ export default async function HomePage() {
                   {node.flag && (
                     <div style={{
                       position: 'absolute', top: -32, left: 8,
-                      fontSize: 20, lineHeight: 1,
-                    }}>🚩</div>
+                      lineHeight: 1, color: 'var(--accent)',
+                    }}>
+                      <FlagIcon size={20} />
+                    </div>
                   )}
                 </div>
 
@@ -468,8 +471,8 @@ export default async function HomePage() {
                   <span style={{ fontSize: 12, color: 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>
                     답변 {topic.answers} · {topic.time}
                   </span>
-                  <span style={{ fontSize: 12, color: '#ef4444', whiteSpace: 'nowrap' }}>
-                    ♥ {topic.likes}
+                  <span style={{ fontSize: 12, color: '#ef4444', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 3 }}>
+                    <HeartIcon size={12} /> {topic.likes}
                   </span>
                 </div>
               )
@@ -507,7 +510,7 @@ export default async function HomePage() {
 
           <div style={{ flex: 1, minWidth: 280 }}>
             <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 12 }}>
-              ✦ 지금 바로 시작하세요
+              • 지금 바로 시작하세요
             </p>
             <h2 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.5px', marginBottom: 10 }}>
               나만의 <span style={{ color: 'var(--accent)' }}>학습 여정</span>을 시작하세요

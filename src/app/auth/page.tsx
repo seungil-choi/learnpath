@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { MailIcon, BookOpenIcon, UserIcon, SearchIcon, PencilIcon, CheckIcon } from '@/components/ui/icons'
 
 function AuthForm() {
   const [email, setEmail] = useState('')
@@ -40,7 +41,7 @@ function AuthForm() {
   if (sent) {
     return (
       <div style={{ textAlign: 'center', padding: '12px 0' }}>
-        <div style={{ fontSize: 52, marginBottom: 16 }}>📬</div>
+        <MailIcon size={52} style={{ color: 'var(--accent)', marginBottom: 16 }} />
         <h2 style={{ fontSize: 20, marginBottom: 10 }}>이메일을 확인하세요</h2>
         <p style={{ color: 'var(--text-secondary)', lineHeight: '24px', fontSize: 14 }}>
           <strong>{email}</strong>으로 로그인 링크를 보냈어요.<br />
@@ -148,24 +149,25 @@ function AuthForm() {
         gap: 10,
       }}>
         <p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700, textAlign: 'center' }}>
-          ✦ 로그인 없이 데모 체험
+          • 로그인 없이 데모 체험
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
           {[
-            { href: '/my-learning', label: '📚 내 학습' },
-            { href: '/my-page', label: '👤 마이페이지' },
-            { href: '/explore', label: '🔍 탐색' },
-            { href: '/create', label: '✏️ 만들기' },
+            { href: '/my-learning', label: '내 학습', Icon: BookOpenIcon },
+            { href: '/my-page', label: '마이페이지', Icon: UserIcon },
+            { href: '/explore', label: '탐색', Icon: SearchIcon },
+            { href: '/create', label: '만들기', Icon: PencilIcon },
           ].map(item => (
             <Link key={item.href} href={item.href} style={{
-              display: 'block', textAlign: 'center',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+              textAlign: 'center',
               padding: '8px', borderRadius: 8,
               background: '#fff', border: '1px solid var(--border)',
               color: 'var(--accent)', textDecoration: 'none',
               fontSize: 12, fontWeight: 600,
               transition: 'border-color 150ms',
             }}>
-              {item.label}
+              <item.Icon size={12} /> {item.label}
             </Link>
           ))}
         </div>
@@ -215,16 +217,16 @@ export default function AuthPage() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {[
-            { icon: '📚', text: '검증된 커리큘럼을 단계별로 학습' },
-            { icon: '✓', text: '진도 저장 & 언제든 이어보기' },
-            { icon: '✏️', text: '나만의 커리큘럼 제작 & 공유' },
+            { icon: <BookOpenIcon size={16} />, text: '검증된 커리큘럼을 단계별로 학습' },
+            { icon: <CheckIcon size={16} />, text: '진도 저장 & 언제든 이어보기' },
+            { icon: <PencilIcon size={16} />, text: '나만의 커리큘럼 제작 & 공유' },
           ].map(item => (
             <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
                 width: 36, height: 36, borderRadius: 10, flexShrink: 0,
                 background: 'rgba(91,92,240,0.12)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 16,
+                color: 'var(--accent)',
               }}>
                 {item.icon}
               </div>
