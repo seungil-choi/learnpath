@@ -6,7 +6,8 @@ import ResumeHero from '@/components/home/ResumeHero'
 import FooterLocale from '@/components/ui/FooterLocale'
 import FooterSocialLinks from '@/components/ui/FooterSocialLinks'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
-import { CheckIcon, HeartIcon, SearchIcon, FlagIcon } from '@/components/ui/icons'
+import { CheckIcon, SearchIcon, FlagIcon } from '@/components/ui/icons'
+import { FEATURES } from '@/lib/featureFlags'
 
 /* ─────────────────── 카테고리 매핑 ─────────────────── */
 // Icon 함수 레퍼런스는 Server→Client prop 직렬화 불가 — 아이콘은 HomeCategorySection 내부에서 처리
@@ -19,21 +20,7 @@ const SIDEBAR_CATEGORIES: { label: string; value: string }[] = [
   { label: '생산성', value: '생산성' },
 ]
 
-/* ─────────────────── 커뮤니티 더미 데이터 ─────────────────── */
-const COMMUNITY_TOPICS = [
-  { type: '질문', title: 'React에서 상태 관리를 Context API로 할 때 주의할 점은?', category: 'React', answers: 24, time: '2시간 전', likes: 35 },
-  { type: '공유', title: '제가 만든 Notion 대시보드 템플릿 공유합니다!', category: '생산성', answers: 18, time: '5시간 전', likes: 52 },
-  { type: '질문', title: '강의 5단계에서 막혔는데 힌트 좀 부탁드립니다 ㅠㅠ', category: 'Python', answers: 31, time: '7시간 전', likes: 28 },
-  { type: '팁', title: 'Excel VLOOKUP보다 더 강력한 XLOOKUP 함수 활용법', category: 'Excel', answers: 15, time: '1일 전', likes: 41 },
-  { type: '정보', title: 'AWS 프리티어로 시작할 때 추천하는 서비스 조합', category: 'AWS', answers: 27, time: '1일 전', likes: 33 },
-]
-
-const TOPIC_BADGE_COLOR: Record<string, { bg: string; color: string }> = {
-  질문: { bg: '#eff6ff', color: '#1d4ed8' },
-  공유: { bg: '#f0fdf4', color: '#15803d' },
-  팁:  { bg: '#fef9c3', color: '#854d0e' },
-  정보: { bg: '#f5f3ff', color: '#6d28d9' },
-}
+/* 커뮤니티 더미 데이터는 Phase 2 활성화 시 다시 도입 — featureFlags.COMMUNITY_TOPICS */
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -399,88 +386,7 @@ export default async function HomePage() {
         />
       </section>
 
-      {/* 진행 중 학습은 상단 ResumeHero에 흡수됨 — 중복 섹션 제거 */}
-
-      {/* ══════════════════════════════════════
-          커뮤니티 인기 토픽 (현재는 예시 데이터)
-      ══════════════════════════════════════ */}
-      <section style={{ padding: '56px 0 0' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <h2 style={{ fontSize: 20 }}>커뮤니티 인기 토픽</h2>
-                <span style={{
-                  fontSize: 10, fontWeight: 700,
-                  padding: '2px 8px', borderRadius: 999,
-                  background: 'var(--accent-light)', color: 'var(--accent)',
-                  letterSpacing: '0.3px',
-                }}>
-                  COMING SOON
-                </span>
-              </div>
-              <p style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>
-                커뮤니티 기능은 준비 중이에요 — 아래는 예시 화면입니다
-              </p>
-            </div>
-            <span style={{ fontSize: 13, color: 'var(--text-tertiary)', fontWeight: 500 }}>
-              곧 만나요
-            </span>
-          </div>
-
-          <div style={{
-            border: '1px solid var(--border)',
-            borderRadius: 14,
-            overflow: 'hidden',
-            background: '#fff',
-          }}>
-            {COMMUNITY_TOPICS.map((topic, i) => {
-              const badge = TOPIC_BADGE_COLOR[topic.type] ?? { bg: '#f5f5f5', color: '#6b7280' }
-              return (
-                <div
-                  key={i}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'auto 1fr auto auto auto',
-                    gap: 16,
-                    alignItems: 'center',
-                    padding: '14px 20px',
-                    borderBottom: i < COMMUNITY_TOPICS.length - 1 ? '1px solid var(--divider)' : 'none',
-                    cursor: 'pointer',
-                    transition: 'background 150ms',
-                  }}
-                  className="menu-item"
-                >
-                  <span style={{
-                    fontSize: 12, fontWeight: 700,
-                    padding: '3px 10px', borderRadius: 6,
-                    background: badge.bg, color: badge.color,
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {topic.type}
-                  </span>
-                  <p style={{ fontSize: 14, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {topic.title}
-                  </p>
-                  <span style={{
-                    fontSize: 12, color: 'var(--text-tertiary)',
-                    padding: '2px 8px', background: 'var(--surface)', borderRadius: 4,
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {topic.category}
-                  </span>
-                  <span style={{ fontSize: 12, color: 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>
-                    답변 {topic.answers} · {topic.time}
-                  </span>
-                  <span style={{ fontSize: 12, color: '#ef4444', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 3 }}>
-                    <HeartIcon size={12} /> {topic.likes}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
+      {/* 커뮤니티 인기 토픽 — Phase 2 (FEATURES.COMMUNITY_TOPICS) */}
 
       {/* ══════════════════════════════════════
           Footer CTA
@@ -630,7 +536,7 @@ export default async function HomePage() {
             <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>
               © {new Date().getFullYear()} LearnPath. All rights reserved.
             </p>
-            <FooterLocale />
+            {FEATURES.LOCALE_SWITCHER && <FooterLocale />}
           </div>
         </div>
       </footer>

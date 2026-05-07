@@ -7,6 +7,7 @@ import ProgressBar from '@/components/ui/ProgressBar'
 import { track } from '@/lib/analytics/track'
 import type { StepWithResources, Progress } from '@/lib/supabase/types'
 import { MenuIcon, CheckIcon, CheckCircleIcon, MessageCircleIcon, BookOpenIcon, SparkleIcon } from '@/components/ui/icons'
+import { FEATURES } from '@/lib/featureFlags'
 
 interface Props {
   curriculum: { id: string; title: string }
@@ -549,59 +550,63 @@ export default function LearningPlayer({
         </p>
       </div>
 
-      {/* AI 요약 (베타) */}
-      <div style={{
-        border: '1px solid var(--border)',
-        borderRadius: 10,
-        padding: '14px',
-        background: 'var(--surface)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-          <p style={{ fontSize: 13, fontWeight: 700 }}>AI 요약</p>
-          <span style={{
-            fontSize: 10, fontWeight: 700, padding: '1px 6px',
-            background: 'var(--accent)', color: '#fff', borderRadius: 4,
-          }}>베타</span>
+      {/* AI 요약 (Phase 2 — FEATURES.AI_SUMMARY) */}
+      {FEATURES.AI_SUMMARY && (
+        <div style={{
+          border: '1px solid var(--border)',
+          borderRadius: 10,
+          padding: '14px',
+          background: 'var(--surface)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+            <p style={{ fontSize: 13, fontWeight: 700 }}>AI 요약</p>
+            <span style={{
+              fontSize: 10, fontWeight: 700, padding: '1px 6px',
+              background: 'var(--accent)', color: '#fff', borderRadius: 4,
+            }}>베타</span>
+          </div>
+          <p style={{ fontSize: 12, color: 'var(--text-tertiary)', lineHeight: '18px', marginBottom: 10 }}>
+            Claude가 이 단계의 핵심 내용을 요약해드려요.
+          </p>
+          <button
+            disabled
+            title="준비 중인 기능이에요"
+            style={{
+              width: '100%', padding: '9px 0',
+              borderRadius: 8, border: '1px solid var(--accent)',
+              color: 'var(--accent)', background: 'var(--accent-light)',
+              fontSize: 13, fontWeight: 600,
+              fontFamily: 'inherit', transition: 'background 150ms',
+              opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}
+          >
+            <SparkleIcon size={12} /> 이 단계 요약하기
+          </button>
         </div>
-        <p style={{ fontSize: 12, color: 'var(--text-tertiary)', lineHeight: '18px', marginBottom: 10 }}>
-          Claude가 이 단계의 핵심 내용을 요약해드려요.
-        </p>
-        <button
-          disabled
-          title="준비 중인 기능이에요"
-          style={{
-            width: '100%', padding: '9px 0',
-            borderRadius: 8, border: '1px solid var(--accent)',
-            color: 'var(--accent)', background: 'var(--accent-light)',
-            fontSize: 13, fontWeight: 600,
-            fontFamily: 'inherit', transition: 'background 150ms',
-            opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          }}
-        >
-          <SparkleIcon size={12} /> 이 단계 요약하기
-        </button>
-      </div>
+      )}
 
-      {/* 도움이 필요하신가요? */}
-      <div>
-        <p style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>도움이 필요하신가요?</p>
-        <p style={{ fontSize: 12, color: 'var(--text-tertiary)', lineHeight: '18px', marginBottom: 10 }}>
-          커뮤니티에서 질문하고 함께 성장해보세요.
-        </p>
-        <a
-          href="#"
-          style={{
-            display: 'flex', alignItems: 'center', gap: 6,
-            fontSize: 13, color: 'var(--accent)', fontWeight: 600, textDecoration: 'none',
-          }}
-        >
-          질문하러 가기
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </a>
-      </div>
+      {/* 커뮤니티 질문 CTA (Phase 2 — FEATURES.COMMUNITY_QUESTION_CTA) */}
+      {FEATURES.COMMUNITY_QUESTION_CTA && (
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>도움이 필요하신가요?</p>
+          <p style={{ fontSize: 12, color: 'var(--text-tertiary)', lineHeight: '18px', marginBottom: 10 }}>
+            커뮤니티에서 질문하고 함께 성장해보세요.
+          </p>
+          <a
+            href="#"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              fontSize: 13, color: 'var(--accent)', fontWeight: 600, textDecoration: 'none',
+            }}
+          >
+            질문하러 가기
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
+        </div>
+      )}
     </div>
   )
 

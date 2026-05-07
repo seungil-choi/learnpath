@@ -6,6 +6,7 @@ import Link from 'next/link'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
 import { getCategoryGradient } from '@/lib/categories'
 import { ClockIcon, UsersIcon, SearchIcon } from '@/components/ui/icons'
+import { FEATURES } from '@/lib/featureFlags'
 
 /* ─ 타입 ─ */
 interface InitialParams {
@@ -94,11 +95,13 @@ function CurriculumCardGrid({ c }: { c: CurriculumWithCreator }) {
             </p>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, color: 'var(--text-tertiary)' }}>
-            {c.avg_rating > 0 && (
+            {FEATURES.CARD_RATING && c.avg_rating > 0 && (
               <span style={{ color: '#f59e0b', fontWeight: 700 }}>★ {c.avg_rating.toFixed(1)}</span>
             )}
             {dur && <span>{dur}</span>}
-            <span>{c.enrollment_count.toLocaleString()}명</span>
+            {FEATURES.CARD_ENROLLMENT_COUNT && (
+              <span>{c.enrollment_count.toLocaleString()}명</span>
+            )}
           </div>
         </div>
       </div>
@@ -155,9 +158,13 @@ function CurriculumCardList({ c }: { c: CurriculumWithCreator }) {
             </p>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 13, color: 'var(--text-tertiary)' }}>
-            {c.avg_rating > 0 && <span style={{ color: '#f59e0b', fontWeight: 700 }}>★ {c.avg_rating.toFixed(1)}</span>}
+            {FEATURES.CARD_RATING && c.avg_rating > 0 && (
+              <span style={{ color: '#f59e0b', fontWeight: 700 }}>★ {c.avg_rating.toFixed(1)}</span>
+            )}
             {dur && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><ClockIcon size={13} /> {dur}</span>}
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><UsersIcon size={13} /> {c.enrollment_count.toLocaleString()}명</span>
+            {FEATURES.CARD_ENROLLMENT_COUNT && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><UsersIcon size={13} /> {c.enrollment_count.toLocaleString()}명</span>
+            )}
           </div>
         </div>
         {/* Save button */}

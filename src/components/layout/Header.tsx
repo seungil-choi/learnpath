@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useLocale } from '@/lib/i18n/context'
 import LocaleSwitcher from '@/components/ui/LocaleSwitcher'
+import { FEATURES } from '@/lib/featureFlags'
 import type { User } from '@supabase/supabase-js'
 
 function navStyle(active: boolean): React.CSSProperties {
@@ -199,10 +200,12 @@ export default function Header() {
         {/* ── Right Actions ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, marginLeft: 'auto' }}>
 
-          {/* 언어 변경 — 항상 표시 */}
-          <div className="locale-btn">
-            <LocaleSwitcher />
-          </div>
+          {/* 언어 변경 — Phase 2 (FEATURES.LOCALE_SWITCHER) */}
+          {FEATURES.LOCALE_SWITCHER && (
+            <div className="locale-btn">
+              <LocaleSwitcher />
+            </div>
+          )}
 
           {/* ════ 로그인 상태 ════ */}
           {isLoggedIn && (

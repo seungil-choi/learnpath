@@ -6,6 +6,7 @@ import DetailSidebar from '@/components/curriculum/DetailSidebar'
 import DetailTabs from '@/components/curriculum/DetailTabs'
 import CurriculumViewTracker from '@/components/curriculum/CurriculumViewTracker'
 import MobileDetailCTA from '@/components/curriculum/MobileDetailCTA'
+import { FEATURES } from '@/lib/featureFlags'
 
 function formatDuration(minutes: number) {
   if (!minutes) return null
@@ -214,7 +215,7 @@ export default async function CurriculumDetailPage({
                     <span style={{ fontWeight: 700 }}>{LEVEL_LABEL[curriculum.level] ?? curriculum.level}</span>
                   </div>
                 )}
-                {curriculum.avg_rating > 0 && (
+                {FEATURES.CARD_RATING && curriculum.avg_rating > 0 && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, color: 'rgba(255,255,255,0.85)' }}>
                     <span style={{ color: '#fbbf24' }}>★</span>
                     <span style={{ fontWeight: 700 }}>{curriculum.avg_rating.toFixed(1)}</span>
@@ -231,10 +232,12 @@ export default async function CurriculumDetailPage({
                   <span style={{ opacity: 0.6 }}>Step</span>
                   <span style={{ fontWeight: 700 }}>{steps.length}개</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, color: 'rgba(255,255,255,0.85)' }}>
-                  <span style={{ fontWeight: 700 }}>{curriculum.enrollment_count.toLocaleString()}명</span>
-                  <span style={{ opacity: 0.6 }}>수강</span>
-                </div>
+                {FEATURES.CARD_ENROLLMENT_COUNT && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, color: 'rgba(255,255,255,0.85)' }}>
+                    <span style={{ fontWeight: 700 }}>{curriculum.enrollment_count.toLocaleString()}명</span>
+                    <span style={{ opacity: 0.6 }}>수강</span>
+                  </div>
+                )}
               </div>
 
               {/* Creator */}

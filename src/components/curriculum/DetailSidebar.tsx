@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { FEATURES } from '@/lib/featureFlags'
 
 interface StepPreview {
   id: string
@@ -237,8 +238,12 @@ export default function DetailSidebar({
           {[
             { label: '예상 학습 시간', value: duration },
             { label: 'Step 수', value: `${stepsCount}개` },
-            { label: '학습자 수', value: `${enrollmentCount.toLocaleString()}명` },
-            avgRating > 0 ? { label: '평균 평점', value: `★ ${avgRating.toFixed(1)} (${ratingCount}개)` } : null,
+            FEATURES.CARD_ENROLLMENT_COUNT
+              ? { label: '학습자 수', value: `${enrollmentCount.toLocaleString()}명` }
+              : null,
+            FEATURES.CARD_RATING && avgRating > 0
+              ? { label: '평균 평점', value: `★ ${avgRating.toFixed(1)} (${ratingCount}개)` }
+              : null,
           ].filter(Boolean).map((item) => (
             <div key={item!.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
               <span style={{ color: 'var(--text-tertiary)' }}>{item!.label}</span>

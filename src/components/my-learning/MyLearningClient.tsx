@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { getCategoryGradient } from '@/lib/categories'
 import { BookOpenIcon, BookmarkIcon, ClockIcon, PencilIcon, FlagIcon, CheckIcon } from '@/components/ui/icons'
 import { timeAgo } from '@/lib/timeAgo'
+import { FEATURES } from '@/lib/featureFlags'
 
 interface Stats {
   inProgressCount: number
@@ -276,7 +277,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                       <div style={{ display: 'flex', gap: 10, fontSize: 12, color: 'var(--text-tertiary)' }}>
                         {cur.category && <span>{cur.category}</span>}
                         {cur.level && <span>{{ beginner: '초급', intermediate: '중급', advanced: '고급' }[cur.level as string]}</span>}
-                        {cur.enrollment_count > 0 && <span>{cur.enrollment_count.toLocaleString()}명</span>}
+                        {FEATURES.CARD_ENROLLMENT_COUNT && cur.enrollment_count > 0 && <span>{cur.enrollment_count.toLocaleString()}명</span>}
                       </div>
                     </div>
                     <Link href={`/curriculum/${s.curriculum_id}`} style={{

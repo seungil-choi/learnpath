@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { track } from '@/lib/analytics/track'
 import { AiIcon, CodeIcon, DesignIcon, BusinessIcon, ProductivityIcon, MarketingIcon, UserIcon, MapIcon, RocketIcon, BookOpenIcon } from '@/components/ui/icons'
+import { FEATURES } from '@/lib/featureFlags'
 
 /* ─── 상수 ─── */
 const CATEGORIES = [
@@ -301,7 +302,7 @@ export default function OnboardingWizard({
                       <span>{LEVEL_LABEL[curr.level] ?? curr.level}</span>
                       <span>·</span>
                       <span>{formatDuration(curr.estimated_duration)}</span>
-                      {curr.enrollment_count > 0 && (
+                      {FEATURES.CARD_ENROLLMENT_COUNT && curr.enrollment_count > 0 && (
                         <>
                           <span>·</span>
                           <span>{curr.enrollment_count.toLocaleString()}명 수강</span>

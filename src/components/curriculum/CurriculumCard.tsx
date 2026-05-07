@@ -6,6 +6,7 @@ import ProgressBar from '@/components/ui/ProgressBar'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
 import { getCategoryGradient, getCategoryByLabel } from '@/lib/categories'
 import { ClockIcon, UsersIcon, ClipboardIcon } from '@/components/ui/icons'
+import { FEATURES } from '@/lib/featureFlags'
 
 interface Props {
   curriculum: CurriculumWithCreator
@@ -160,10 +161,12 @@ export default function CurriculumCard({ curriculum, progress, rank }: Props) {
             marginTop: 'auto',
           }}>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', minWidth: 0 }}>
-              <span style={{ fontSize: 12, color: 'var(--text-tertiary)', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                <UsersIcon size={12} /> {curriculum.enrollment_count.toLocaleString()}명
-              </span>
-              {curriculum.avg_rating > 0 && (
+              {FEATURES.CARD_ENROLLMENT_COUNT && (
+                <span style={{ fontSize: 12, color: 'var(--text-tertiary)', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                  <UsersIcon size={12} /> {curriculum.enrollment_count.toLocaleString()}명
+                </span>
+              )}
+              {FEATURES.CARD_RATING && curriculum.avg_rating > 0 && (
                 <span style={{ fontSize: 12, color: '#f59e0b', whiteSpace: 'nowrap', fontWeight: 600 }}>
                   ★ {Number(curriculum.avg_rating).toFixed(1)}
                 </span>

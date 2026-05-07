@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import StepAccordion from '@/components/curriculum/StepAccordion'
 import { StarIcon, MessageCircleIcon, TargetIcon, CheckCircleIcon } from '@/components/ui/icons'
+import { FEATURES } from '@/lib/featureFlags'
 
 interface Step {
   id: string
@@ -39,15 +40,19 @@ export default function DetailTabs({
   ratingCount,
   enrollmentCount,
 }: Props) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'curriculum' | 'review' | 'qa' | 'recommend'>('overview')
+  type TabKey = 'overview' | 'curriculum' | 'review' | 'qa' | 'recommend'
+  const [activeTab, setActiveTab] = useState<TabKey>('overview')
 
+  // Phase 1 정책: 소개 + 커리큘럼만 노출. 리뷰/Q&A/추천은 사용자 5천명 시점 이후
   const tabs = [
-    { key: 'overview', label: '소개' },
-    { key: 'curriculum', label: '커리큘럼' },
-    { key: 'review', label: `리뷰 ${ratingCount > 0 ? ratingCount : ''}`.trim() },
-    { key: 'qa', label: 'Q&A' },
-    { key: 'recommend', label: '추천' },
-  ] as const
+    { key: 'overview' as const, label: '소개' },
+    { key: 'curriculum' as const, label: '커리큘럼' },
+    ...(FEATURES.REVIEWS_TAB
+      ? [{ key: 'review' as const, label: `리뷰 ${ratingCount > 0 ? ratingCount : ''}`.trim() }]
+      : []),
+    ...(FEATURES.QA_TAB ? [{ key: 'qa' as const, label: 'Q&A' }] : []),
+    ...(FEATURES.RECOMMEND_TAB ? [{ key: 'recommend' as const, label: '추천' }] : []),
+  ]
 
   return (
     <div>
@@ -262,47 +267,9 @@ export default function DetailTabs({
         )}
       </div>
 
-      {/* ── Mobile: 하단 고정 CTA ── */}
-      <div className="detail-mobile-cta" style={{
-        display: 'none',
-        position: 'fixed',
-        bottom: 64,  /* bottom nav 위 */
-        left: 0, right: 0,
-        background: '#fff',
-        borderTop: '1px solid var(--border)',
-        padding: '12px 16px',
-        gap: 10,
-        zIndex: 50,
-      }}>
-        <button disabled style={{
-          flex: 1, padding: '13px',
-          borderRadius: 10,
-          border: '1.5px solid var(--border)',
-          background: 'transparent',
-          color: 'var(--text-secondary)',
-          fontWeight: 600, fontSize: 14,
-          fontFamily: 'inherit',
-          opacity: 0.5, cursor: 'not-allowed',
-        }}>
-          미리보기 ▷
-        </button>
-        <Link href={`/curriculum/${curriculumId}/learn`} style={{
-          flex: 2, padding: '13px',
-          borderRadius: 10,
-          background: 'var(--accent)',
-          color: '#fff',
-          textDecoration: 'none',
-          fontWeight: 700, fontSize: 14,
-          textAlign: 'center',
-        }}>
-          학습 시작하기
-        </Link>
-      </div>
+      {/* 모바일 하단 고정 CTA는 MobileDetailCTA 컴포넌트로 분리 (curriculum/[id]/page.tsx에서 마운트) */}
 
       <style>{`
-        @media (max-width: 768px) {
-          .detail-mobile-cta { display: flex !important; }
-        }
         .tab-btn {
           transition: all 150ms;
         }

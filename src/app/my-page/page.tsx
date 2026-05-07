@@ -4,6 +4,7 @@ import ProfileEditForm from '@/components/profile/ProfileEditForm'
 import DemoBanner from '@/components/ui/DemoBanner'
 import { getCategoryGradient } from '@/lib/categories'
 import { PencilIcon } from '@/components/ui/icons'
+import { FEATURES } from '@/lib/featureFlags'
 
 const grad = (cat?: string) => getCategoryGradient(cat)
 
@@ -216,7 +217,7 @@ function MyPageLayout({
                   </div>
                   <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
                     {c.category ?? '미분류'} · {formatDate(c.updated_at ?? c.created_at)}
-                    {c.enrollment_count > 0 && ` · ${c.enrollment_count.toLocaleString()}명`}
+                    {FEATURES.CARD_ENROLLMENT_COUNT && c.enrollment_count > 0 && ` · ${c.enrollment_count.toLocaleString()}명`}
                   </p>
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
