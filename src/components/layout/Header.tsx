@@ -144,17 +144,12 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* ── Desktop Nav ── */}
+        {/* ── Desktop Nav (Phase 1: 탐색만 활성) ── */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: 2, flexShrink: 0 }} className="desktop-nav">
           <Link href="/explore" style={navStyle(isActive('/explore'))} className="nav-link">
-            {t('nav_explore')} ▾
+            {t('nav_explore')}
           </Link>
-          <span style={{ ...navStyle(false), color: 'var(--text-tertiary)', opacity: 0.5, cursor: 'default' }}>
-            {t('nav_roadmap')}
-          </span>
-          <span style={{ ...navStyle(false), color: 'var(--text-tertiary)', opacity: 0.5, cursor: 'default' }}>
-            {t('nav_community')}
-          </span>
+          {/* 학습 로드맵 / 커뮤니티는 Phase 2 — 회색 비활성 라벨은 신뢰감 저하 */}
         </nav>
 
         {/* ── Search (flex 영역) ── */}
@@ -192,7 +187,7 @@ export default function Header() {
               position: 'absolute', right: 8,
               fontSize: 10, color: 'var(--text-tertiary)',
               background: 'var(--border)', borderRadius: 4,
-              padding: '1px 5px', fontFamily: 'inherit', letterSpacing: '0.2px',
+              padding: '2px 4px', fontFamily: 'inherit', letterSpacing: '0.2px',
             }}>⌘K</kbd>
           </div>
         </form>
@@ -216,7 +211,7 @@ export default function Header() {
                 className="create-btn"
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
-                  padding: '7px 14px',
+                  padding: '8px 14px',
                   borderRadius: 8,
                   border: '1.5px solid var(--accent)',
                   color: 'var(--accent)',
@@ -329,10 +324,10 @@ export default function Header() {
                           href={item.href}
                           style={{
                             display: 'flex', alignItems: 'center', gap: 10,
-                            padding: '9px 16px',
+                            padding: '8px 16px',
                             textDecoration: 'none',
                             background: isActive(item.href) ? 'var(--accent-light)' : 'transparent',
-                            transition: 'background 100ms',
+                            transition: 'background 150ms',
                           }}
                           className="menu-item"
                         >
@@ -361,10 +356,10 @@ export default function Header() {
                       onClick={handleSignOut}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 10,
-                        width: '100%', padding: '9px 16px 12px',
+                        width: '100%', padding: '8px 16px 12px',
                         background: 'none', border: 'none',
                         cursor: 'pointer', fontFamily: 'inherit',
-                        textAlign: 'left', transition: 'background 100ms',
+                        textAlign: 'left', transition: 'background 150ms',
                         color: 'var(--text-secondary)',
                       }}
                       className="menu-item"
@@ -386,7 +381,7 @@ export default function Header() {
               <Link
                 href="/auth"
                 style={{
-                  padding: '7px 14px',
+                  padding: '8px 14px',
                   borderRadius: 8,
                   border: '1px solid var(--border)',
                   color: 'var(--text-secondary)',

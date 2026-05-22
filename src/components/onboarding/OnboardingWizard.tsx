@@ -377,7 +377,7 @@ function StepIndicator({ current }: { current: number }) {
                 width: 56, height: 2,
                 background: i < current ? 'var(--accent)' : 'var(--border)',
                 margin: '0 4px', marginBottom: 18,
-                transition: 'background 200ms',
+                transition: 'background 150ms',
               }} />
             )}
           </div>

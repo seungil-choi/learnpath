@@ -181,7 +181,7 @@ export default async function HomePage() {
             <div style={{ display: 'flex', gap: 12, marginBottom: 48, flexWrap: 'wrap' }}>
               <Link href="/#explore" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '13px 24px',
+                padding: '12px 24px',
                 borderRadius: 8,
                 background: 'var(--accent)',
                 color: '#fff',
@@ -194,7 +194,7 @@ export default async function HomePage() {
               </Link>
               <Link href="/create" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '13px 24px',
+                padding: '12px 24px',
                 borderRadius: 8,
                 border: '1.5px solid var(--accent)',
                 color: 'var(--accent)',

@@ -127,7 +127,7 @@ export default function StepAccordion({ steps, completedStepIds, curriculumId }:
               {isCompleted && (
                 <span style={{
                   fontSize: 11, color: '#15803d', fontWeight: 700,
-                  padding: '2px 7px', background: '#dcfce7', borderRadius: 4, flexShrink: 0,
+                  padding: '2px 8px', background: '#dcfce7', borderRadius: 4, flexShrink: 0,
                 }}>완료</span>
               )}
 
@@ -178,7 +178,7 @@ export default function StepAccordion({ steps, completedStepIds, curriculumId }:
                           style={{
                             display: 'flex', alignItems: 'center', gap: 10,
                             textDecoration: 'none', color: 'inherit',
-                            padding: '9px 12px', borderRadius: 8,
+                            padding: '8px 12px', borderRadius: 8,
                             background: 'var(--surface)',
                             border: '1px solid var(--border)',
                             transition: 'border-color 150ms, background 150ms',

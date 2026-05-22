@@ -133,7 +133,7 @@ function MyPageLayout({
                   </div>
                   <p style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 4 }}>마지막 학습 {formatDate(p.lastDate ?? p.last_accessed_at)}</p>
                 </div>
-                <Link href={`/curriculum/${p.id}/learn`} style={{ padding: '9px 16px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap' }}>이어보기</Link>
+                <Link href={`/curriculum/${p.id}/learn`} style={{ padding: '8px 16px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap' }}>이어보기</Link>
               </div>
             ))}
           </div>
@@ -149,7 +149,7 @@ function MyPageLayout({
               <Link key={c.id} href={`/curriculum/${c.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div style={{ border: '1px solid #86efac', borderRadius: 12, overflow: 'hidden', background: '#f0fdf4' }}>
                   <div style={{ height: 52, background: grad(c.category), position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: 6, left: 6, fontSize: 10, fontWeight: 700, color: '#15803d', background: 'rgba(240,253,244,0.9)', borderRadius: 4, padding: '1px 6px' }}>✓ 완료</div>
+                    <div style={{ position: 'absolute', top: 6, left: 6, fontSize: 10, fontWeight: 700, color: '#15803d', background: 'rgba(240,253,244,0.9)', borderRadius: 4, padding: '2px 6px' }}>✓ 완료</div>
                   </div>
                   <div style={{ padding: '10px 12px' }}>
                     <p style={{ fontWeight: 700, fontSize: 13, lineHeight: '18px', marginBottom: 2, color: '#166534' }}>{c.title}</p>
@@ -211,7 +211,7 @@ function MyPageLayout({
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
                     <p style={{ fontWeight: 700, fontSize: 14, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.title}</p>
-                    <span style={{ fontSize: 11, fontWeight: 700, flexShrink: 0, padding: '2px 7px', borderRadius: 4, background: c.is_published ? '#dcfce7' : '#fef9c3', color: c.is_published ? '#15803d' : '#92400e' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, flexShrink: 0, padding: '2px 8px', borderRadius: 4, background: c.is_published ? '#dcfce7' : '#fef9c3', color: c.is_published ? '#15803d' : '#92400e' }}>
                       {c.is_published ? '발행됨' : '초안'}
                     </span>
                   </div>

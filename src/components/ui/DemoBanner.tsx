@@ -32,7 +32,7 @@ export default function DemoBanner() {
       </div>
       <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
         <Link href="/explore" style={{
-          padding: '7px 14px', borderRadius: 8,
+          padding: '8px 14px', borderRadius: 8,
           background: 'rgba(255,255,255,0.15)',
           color: '#fff', textDecoration: 'none',
           fontSize: 13, fontWeight: 600,
@@ -43,7 +43,7 @@ export default function DemoBanner() {
           탐색하기
         </Link>
         <Link href="/auth" style={{
-          padding: '7px 14px', borderRadius: 8,
+          padding: '8px 14px', borderRadius: 8,
           background: '#fff',
           color: '#4f46e5', textDecoration: 'none',
           fontSize: 13, fontWeight: 700,

@@ -120,7 +120,7 @@ export default function ResumeHero({ primary, secondary, userName }: Props) {
                 fontWeight: 700,
                 color: '#fff',
                 background: 'rgba(0,0,0,0.32)',
-                padding: '3px 9px',
+                padding: '4px 8px',
                 borderRadius: 4,
                 backdropFilter: 'blur(4px)',
               }}

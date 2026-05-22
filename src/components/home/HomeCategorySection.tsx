@@ -156,7 +156,7 @@ export default function HomeCategorySection({ curricula, categories }: Props) {
             </p>
             <Link href="/create" style={{
               display: 'inline-block', marginTop: 16,
-              padding: '9px 18px', borderRadius: 8,
+              padding: '10px 18px', borderRadius: 8,
               background: 'var(--accent)', color: '#fff',
               textDecoration: 'none', fontWeight: 600, fontSize: 13,
             }}>

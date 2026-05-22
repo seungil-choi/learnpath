@@ -150,7 +150,7 @@ export default function DetailSidebar({
                 fontSize: 11,
                 background: 'rgba(255,255,255,0.25)',
                 borderRadius: 4,
-                padding: '2px 7px',
+                padding: '2px 8px',
                 fontWeight: 600,
               }}>
                 로그인 없이

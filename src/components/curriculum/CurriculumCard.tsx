@@ -77,7 +77,7 @@ export default function CurriculumCard({ curriculum, progress, rank }: Props) {
               position: 'absolute', top: 8, left: 8,
               fontSize: 11, fontWeight: 800, color: '#fff',
               background: rank === 1 ? '#f59e0b' : rank === 2 ? '#9ca3af' : '#b45309',
-              borderRadius: 4, padding: '2px 7px',
+              borderRadius: 4, padding: '2px 8px',
               filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.3))',
             }}>
               {rank}위
@@ -94,7 +94,7 @@ export default function CurriculumCard({ curriculum, progress, rank }: Props) {
             {curriculum.category && (
               <span style={{
                 fontSize: 11,
-                padding: '2px 7px',
+                padding: '2px 8px',
                 background: 'var(--surface)',
                 borderRadius: 4,
                 color: 'var(--text-tertiary)',

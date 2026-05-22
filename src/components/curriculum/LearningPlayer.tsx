@@ -561,7 +561,7 @@ export default function LearningPlayer({
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
             <p style={{ fontSize: 13, fontWeight: 700 }}>AI 요약</p>
             <span style={{
-              fontSize: 10, fontWeight: 700, padding: '1px 6px',
+              fontSize: 10, fontWeight: 700, padding: '2px 6px',
               background: 'var(--accent)', color: '#fff', borderRadius: 4,
             }}>베타</span>
           </div>
@@ -572,7 +572,7 @@ export default function LearningPlayer({
             disabled
             title="준비 중인 기능이에요"
             style={{
-              width: '100%', padding: '9px 0',
+              width: '100%', padding: '8px 0',
               borderRadius: 8, border: '1px solid var(--accent)',
               color: 'var(--accent)', background: 'var(--accent-light)',
               fontSize: 13, fontWeight: 600,
@@ -1093,7 +1093,7 @@ export default function LearningPlayer({
                   textDecoration: 'none', color: 'inherit', background: '#fff',
                 }}
               >
-                <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 7px', borderRadius: 4, background: 'var(--accent-light)', color: 'var(--accent)', flexShrink: 0 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 4, background: 'var(--accent-light)', color: 'var(--accent)', flexShrink: 0 }}>
                   {RESOURCE_TYPE_LABEL[r.type] ?? '링크'}
                 </span>
                 <span style={{ fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

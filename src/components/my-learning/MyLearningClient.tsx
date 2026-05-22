@@ -129,7 +129,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
             {tab.count !== undefined && tab.count > 0 && (
               <span style={{
                 marginLeft: 6, fontSize: 11, fontWeight: 700,
-                padding: '1px 6px', borderRadius: 999,
+                padding: '2px 6px', borderRadius: 999,
                 background: activeTab === tab.key ? 'var(--accent)' : 'var(--border)',
                 color: activeTab === tab.key ? '#fff' : 'var(--text-tertiary)',
               }}>{tab.count}</span>
@@ -168,7 +168,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                       <span style={{
                         position: 'absolute', top: 6, left: 6,
                         fontSize: 10, fontWeight: 700, color: '#fff',
-                        background: 'rgba(91,92,240,0.7)', borderRadius: 4, padding: '1px 6px',
+                        background: 'rgba(91,92,240,0.7)', borderRadius: 4, padding: '2px 6px',
                       }}>진행 중</span>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -186,7 +186,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                       )}
                     </div>
                     <Link href={`/curriculum/${p.curriculum_id}/learn`} style={{
-                      padding: '9px 16px', borderRadius: 8,
+                      padding: '8px 16px', borderRadius: 8,
                       border: '1.5px solid var(--accent)', color: 'var(--accent)',
                       textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap',
                     }}>이어서 학습</Link>
@@ -224,7 +224,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                     border: '1px solid #86efac', borderRadius: 12, padding: '16px', background: '#f0fdf4',
                   }}>
                     <div style={{ width: 80, height: 60, borderRadius: 8, flexShrink: 0, background: grad(cur.category), position: 'relative' }}>
-                      <span style={{ position: 'absolute', top: 6, left: 6, fontSize: 10, fontWeight: 700, color: '#15803d', background: 'rgba(240,253,244,0.9)', borderRadius: 4, padding: '1px 6px' }}>✓ 완료</span>
+                      <span style={{ position: 'absolute', top: 6, left: 6, fontSize: 10, fontWeight: 700, color: '#15803d', background: 'rgba(240,253,244,0.9)', borderRadius: 4, padding: '2px 6px' }}>✓ 완료</span>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontWeight: 700, fontSize: 14, marginBottom: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cur.title}</p>
@@ -234,7 +234,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                       </p>
                     </div>
                     <Link href={`/curriculum/${p.curriculum_id}/learn`} style={{
-                      padding: '9px 16px', borderRadius: 8,
+                      padding: '8px 16px', borderRadius: 8,
                       border: '1.5px solid #15803d', color: '#15803d',
                       textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap',
                     }}>복습하기</Link>
@@ -281,7 +281,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                       </div>
                     </div>
                     <Link href={`/curriculum/${s.curriculum_id}`} style={{
-                      padding: '9px 16px', borderRadius: 8,
+                      padding: '8px 16px', borderRadius: 8,
                       background: 'var(--accent)', color: '#fff',
                       textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap',
                     }}>시작하기</Link>
@@ -316,8 +316,8 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                     <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{cur.category ?? '미분류'} · {formatDate(cur.updated_at ?? cur.created_at)}</p>
                   </div>
                   <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-                    <Link href={`/curriculum/${cur.id}/edit`} style={{ padding: '9px 14px', borderRadius: 8, border: '1px solid var(--border)', color: 'var(--text-secondary)', textDecoration: 'none', fontSize: 13, fontWeight: 500 }}>편집</Link>
-                    <Link href={`/curriculum/${cur.id}`} style={{ padding: '9px 14px', borderRadius: 8, border: '1px solid var(--accent)', color: 'var(--accent)', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>발행</Link>
+                    <Link href={`/curriculum/${cur.id}/edit`} style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid var(--border)', color: 'var(--text-secondary)', textDecoration: 'none', fontSize: 13, fontWeight: 500 }}>편집</Link>
+                    <Link href={`/curriculum/${cur.id}`} style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid var(--accent)', color: 'var(--accent)', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>발행</Link>
                   </div>
                 </div>
               ))}
@@ -349,7 +349,7 @@ function EmptyState({ icon, message, desc, cta, href }: { icon: React.ReactNode;
       <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>{icon}</div>
       <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: desc ? 6 : 20 }}>{message}</p>
       {desc && <p style={{ fontSize: 13, color: 'var(--text-tertiary)', marginBottom: 20 }}>{desc}</p>}
-      <Link href={href} style={{ display: 'inline-block', padding: '9px 18px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: 13 }}>
+      <Link href={href} style={{ display: 'inline-block', padding: '10px 18px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: 13 }}>
         {cta} →
       </Link>
     </div>

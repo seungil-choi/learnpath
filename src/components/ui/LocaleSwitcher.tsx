@@ -101,7 +101,7 @@ export default function LocaleSwitcher() {
                   alignItems: 'center',
                   gap: 8,
                   width: '100%',
-                  padding: '9px 12px',
+                  padding: '8px 12px',
                   border: 'none',
                   background: active ? 'var(--accent-light)' : 'transparent',
                   color: active ? 'var(--accent)' : 'var(--text-primary)',
@@ -110,7 +110,7 @@ export default function LocaleSwitcher() {
                   cursor: 'pointer',
                   fontFamily: 'inherit',
                   textAlign: 'left',
-                  transition: 'background 100ms',
+                  transition: 'background 150ms',
                 }}
                 onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.background = 'var(--surface)' }}
                 onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}

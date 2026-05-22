@@ -441,7 +441,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
         </div>
         <button onClick={addStep} style={{
           display: 'flex', alignItems: 'center', gap: 6,
-          padding: '9px 16px', borderRadius: 8,
+          padding: '8px 16px', borderRadius: 8,
           border: 'none', background: 'var(--accent)', color: '#fff',
           fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit',
         }}>
@@ -689,7 +689,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
               disabled={wizardStep === 0}
               style={{
                 display: 'flex', alignItems: 'center', gap: 6,
-                padding: '11px 20px', borderRadius: 8,
+                padding: '12px 20px', borderRadius: 8,
                 border: '1px solid var(--border)', background: 'transparent',
                 color: 'var(--text-secondary)',
                 cursor: wizardStep === 0 ? 'not-allowed' : 'pointer',
@@ -704,7 +704,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
               {wizardStep === WIZARD_STEPS.length - 1 ? (
                 <>
                   <button onClick={() => save(false)} disabled={saving} style={{
-                    padding: '11px 20px', borderRadius: 8,
+                    padding: '12px 20px', borderRadius: 8,
                     border: '1px solid var(--border)', background: 'transparent',
                     color: 'var(--text-secondary)', cursor: 'pointer',
                     fontSize: 14, fontFamily: 'inherit', opacity: saving ? 0.6 : 1,
@@ -874,7 +874,7 @@ function StepCard({ step, idx, isOnly, isFirst, isLast, onUpdate, onRemove, onMo
           {step.title || '(제목을 입력해주세요)'}
         </p>
         <span style={{
-          fontSize: 11, fontWeight: 700, padding: '2px 7px', borderRadius: 4,
+          fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 4,
           background: 'var(--accent-light)', color: 'var(--accent)', flexShrink: 0,
         }}>필수</span>
         <div style={{ display: 'flex', gap: 3, flexShrink: 0 }}>

@@ -110,7 +110,7 @@ export default function CategoryFilter() {
             onClick={() => router.push('/')}
             title="필터 초기화"
             style={{
-              padding: '5px 9px',
+              padding: '4px 8px',
               borderRadius: 8,
               fontSize: 12,
               border: '1px solid var(--border)',

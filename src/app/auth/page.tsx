@@ -131,7 +131,7 @@ function AuthForm() {
           color: email ? '#fff' : 'var(--text-tertiary)',
           fontWeight: 700, fontSize: 14,
           cursor: loading || !email ? 'not-allowed' : 'pointer',
-          fontFamily: 'inherit', transition: 'background 200ms',
+          fontFamily: 'inherit', transition: 'background 150ms',
         }}>
           {loading ? '전송 중...' : '로그인 링크 받기'}
         </button>

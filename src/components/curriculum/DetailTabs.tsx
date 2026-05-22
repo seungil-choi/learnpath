@@ -257,7 +257,7 @@ export default function DetailTabs({
             <p style={{ fontSize: 13, marginTop: 6 }}>추천 커리큘럼 기능은 준비 중이에요</p>
             <Link href="/" style={{
               display: 'inline-block', marginTop: 20,
-              padding: '9px 18px', borderRadius: 8,
+              padding: '10px 18px', borderRadius: 8,
               background: 'var(--accent)', color: '#fff',
               textDecoration: 'none', fontWeight: 600, fontSize: 13,
             }}>

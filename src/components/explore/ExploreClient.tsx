@@ -139,12 +139,12 @@ function CurriculumCardList({ c }: { c: CurriculumWithCreator }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
             {c.category && (
-              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', padding: '1px 7px', background: 'var(--accent-light)', borderRadius: 4 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', padding: '2px 8px', background: 'var(--accent-light)', borderRadius: 4 }}>
                 {c.category}
               </span>
             )}
             {c.level && (
-              <span style={{ fontSize: 11, color: 'var(--text-tertiary)', padding: '1px 7px', background: 'var(--surface)', borderRadius: 4 }}>
+              <span style={{ fontSize: 11, color: 'var(--text-tertiary)', padding: '2px 8px', background: 'var(--surface)', borderRadius: 4 }}>
                 {LEVEL_LABEL[c.level]}
               </span>
             )}
@@ -257,7 +257,7 @@ export default function ExploreClient({ curricula, initialParams }: Props) {
             />
           </div>
           <button type="submit" style={{
-            padding: '11px 20px', borderRadius: 8,
+            padding: '12px 20px', borderRadius: 8,
             background: 'var(--accent)', color: '#fff',
             border: 'none', fontWeight: 700, fontSize: 14,
             cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
