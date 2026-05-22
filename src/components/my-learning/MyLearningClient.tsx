@@ -51,7 +51,7 @@ function CircleProgress({ percent }: { percent: number }) {
           transform="rotate(-90 48 48)" style={{ transition: 'stroke-dashoffset 600ms ease' }} />
       </svg>
       <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontSize: 18, fontWeight: 900, color: 'var(--accent)', lineHeight: 1 }}>{percent}%</span>
+        <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent)', lineHeight: 1 }}>{percent}%</span>
         <span style={{ fontSize: 10, color: 'var(--text-tertiary)', marginTop: 2 }}>전체 진행률</span>
       </div>
     </div>
@@ -76,7 +76,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
 
       {/* ── 헤더 ── */}
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.5px' }}>내 학습</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.5px' }}>내 학습</h1>
         <p style={{ fontSize: 14, color: 'var(--text-tertiary)', marginTop: 4 }}>
           학습 진행 상황을 확인하고 이어보세요
         </p>
@@ -104,7 +104,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                   : item.Icon && <item.Icon size={20} />
                 }
               </span>
-              <span style={{ fontSize: 20, fontWeight: 900, lineHeight: 1, color: item.green ? 'var(--success)' : item.accent ? 'var(--accent)' : 'var(--text-primary)' }}>
+              <span style={{ fontSize: 20, fontWeight: 800, lineHeight: 1, color: item.green ? 'var(--success)' : item.accent ? 'var(--accent)' : 'var(--text-primary)' }}>
                 {item.value}
               </span>
               <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{item.label}</span>
@@ -113,7 +113,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
         </div>
         {inProgress.length > 0 && (
           <Link href={`/curriculum/${inProgress[0].curriculum_id}/learn`} style={{
-            padding: '10px 20px', borderRadius: 10,
+            padding: '10px 20px', borderRadius: 8,
             background: 'var(--accent)', color: '#fff',
             textDecoration: 'none', fontWeight: 700, fontSize: 14, flexShrink: 0, whiteSpace: 'nowrap',
           }}>▶ 이어보기</Link>
@@ -143,7 +143,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
         <section style={{ marginBottom: 40 }}>
           {activeTab === 'all' && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 17 }}>진행 중인 커리큘럼</h2>
+              <h2 style={{ fontSize: 18 }}>진행 중인 커리큘럼</h2>
               {inProgress.length > 3 && (
                 <button onClick={() => setActiveTab('inprogress')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--accent)', fontWeight: 600, fontFamily: 'inherit' }}>
                   전체 보기 →
@@ -161,10 +161,10 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                 return (
                   <div key={p.id} style={{
                     display: 'flex', alignItems: 'center', gap: 16,
-                    border: '1px solid var(--border)', borderRadius: 14,
+                    border: '1px solid var(--border)', borderRadius: 12,
                     padding: '16px', background: '#fff',
                   }}>
-                    <div style={{ width: 80, height: 60, borderRadius: 10, flexShrink: 0, background: grad(cur.category), position: 'relative' }}>
+                    <div style={{ width: 80, height: 60, borderRadius: 8, flexShrink: 0, background: grad(cur.category), position: 'relative' }}>
                       <span style={{
                         position: 'absolute', top: 6, left: 6,
                         fontSize: 10, fontWeight: 700, color: '#fff',
@@ -186,7 +186,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                       )}
                     </div>
                     <Link href={`/curriculum/${p.curriculum_id}/learn`} style={{
-                      padding: '9px 16px', borderRadius: 9,
+                      padding: '9px 16px', borderRadius: 8,
                       border: '1.5px solid var(--accent)', color: 'var(--accent)',
                       textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap',
                     }}>이어서 학습</Link>
@@ -203,7 +203,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
         <section style={{ marginBottom: 40 }}>
           {activeTab === 'all' && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 17 }}>완료한 커리큘럼</h2>
+              <h2 style={{ fontSize: 18 }}>완료한 커리큘럼</h2>
               {completed.length > 3 && (
                 <button onClick={() => setActiveTab('completed')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--accent)', fontWeight: 600, fontFamily: 'inherit' }}>
                   전체 보기 →
@@ -221,9 +221,9 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                 return (
                   <div key={p.id} style={{
                     display: 'flex', alignItems: 'center', gap: 16,
-                    border: '1px solid #86efac', borderRadius: 14, padding: '16px', background: '#f0fdf4',
+                    border: '1px solid #86efac', borderRadius: 12, padding: '16px', background: '#f0fdf4',
                   }}>
-                    <div style={{ width: 80, height: 60, borderRadius: 10, flexShrink: 0, background: grad(cur.category), position: 'relative' }}>
+                    <div style={{ width: 80, height: 60, borderRadius: 8, flexShrink: 0, background: grad(cur.category), position: 'relative' }}>
                       <span style={{ position: 'absolute', top: 6, left: 6, fontSize: 10, fontWeight: 700, color: '#15803d', background: 'rgba(240,253,244,0.9)', borderRadius: 4, padding: '1px 6px' }}>✓ 완료</span>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -234,7 +234,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                       </p>
                     </div>
                     <Link href={`/curriculum/${p.curriculum_id}/learn`} style={{
-                      padding: '9px 16px', borderRadius: 9,
+                      padding: '9px 16px', borderRadius: 8,
                       border: '1.5px solid #15803d', color: '#15803d',
                       textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap',
                     }}>복습하기</Link>
@@ -251,7 +251,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
         <section style={{ marginBottom: 40 }}>
           {activeTab === 'all' && saves.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 17 }}>찜한 강의</h2>
+              <h2 style={{ fontSize: 18 }}>찜한 강의</h2>
               {saves.length > 3 && (
                 <button onClick={() => setActiveTab('saved')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--accent)', fontWeight: 600, fontFamily: 'inherit' }}>
                   전체 보기 →
@@ -269,9 +269,9 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                 return (
                   <div key={s.curriculum_id} style={{
                     display: 'flex', alignItems: 'center', gap: 16,
-                    border: '1px solid var(--border)', borderRadius: 14, padding: '16px', background: '#fff',
+                    border: '1px solid var(--border)', borderRadius: 12, padding: '16px', background: '#fff',
                   }}>
-                    <div style={{ width: 80, height: 60, borderRadius: 10, flexShrink: 0, background: grad(cur.category) }} />
+                    <div style={{ width: 80, height: 60, borderRadius: 8, flexShrink: 0, background: grad(cur.category) }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontWeight: 700, fontSize: 14, marginBottom: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cur.title}</p>
                       <div style={{ display: 'flex', gap: 10, fontSize: 12, color: 'var(--text-tertiary)' }}>
@@ -281,7 +281,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
                       </div>
                     </div>
                     <Link href={`/curriculum/${s.curriculum_id}`} style={{
-                      padding: '9px 16px', borderRadius: 9,
+                      padding: '9px 16px', borderRadius: 8,
                       background: 'var(--accent)', color: '#fff',
                       textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap',
                     }}>시작하기</Link>
@@ -298,7 +298,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
         <section style={{ marginBottom: 40 }}>
           {activeTab === 'all' && drafts.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 17 }}>내 초안</h2>
+              <h2 style={{ fontSize: 18 }}>내 초안</h2>
             </div>
           )}
           {drafts.length === 0 ? (
@@ -308,9 +308,9 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
               {drafts.map((cur: any) => (
                 <div key={cur.id} style={{
                   display: 'flex', alignItems: 'center', gap: 16,
-                  border: '1px solid var(--border)', borderRadius: 14, padding: '16px', background: '#fff',
+                  border: '1px solid var(--border)', borderRadius: 12, padding: '16px', background: '#fff',
                 }}>
-                  <div style={{ width: 80, height: 60, borderRadius: 10, flexShrink: 0, background: grad(cur.category) }} />
+                  <div style={{ width: 80, height: 60, borderRadius: 8, flexShrink: 0, background: grad(cur.category) }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontWeight: 700, fontSize: 14, marginBottom: 3 }}>{cur.title || '(제목 없음)'}</p>
                     <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{cur.category ?? '미분류'} · {formatDate(cur.updated_at ?? cur.created_at)}</p>
@@ -334,7 +334,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
           </div>
           <h2 style={{ fontSize: 20, marginBottom: 8 }}>학습을 시작해보세요!</h2>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 28 }}>LearnPath에서 첫 번째 커리큘럼을 발견하고 시작해보세요.</p>
-          <Link href="/explore" style={{ display: 'inline-block', padding: '12px 24px', borderRadius: 10, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
+          <Link href="/explore" style={{ display: 'inline-block', padding: '12px 24px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
             커리큘럼 탐색하기 →
           </Link>
         </div>
@@ -345,7 +345,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
 
 function EmptyState({ icon, message, desc, cta, href }: { icon: React.ReactNode; message: string; desc?: string; cta: string; href: string }) {
   return (
-    <div style={{ textAlign: 'center', padding: '48px 24px', border: '1px dashed var(--border)', borderRadius: 14 }}>
+    <div style={{ textAlign: 'center', padding: '48px 24px', border: '1px dashed var(--border)', borderRadius: 12 }}>
       <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>{icon}</div>
       <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: desc ? 6 : 20 }}>{message}</p>
       {desc && <p style={{ fontSize: 13, color: 'var(--text-tertiary)', marginBottom: 20 }}>{desc}</p>}

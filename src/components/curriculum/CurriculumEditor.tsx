@@ -385,7 +385,7 @@ export default function CurriculumEditor({ userId, curriculum }: Props) {
 
                 <button onClick={() => addResource(step.id)} style={{
                   padding: '7px 12px',
-                  borderRadius: 6,
+                  borderRadius: 4,
                   border: '1px dashed var(--border)',
                   background: 'var(--surface)',
                   color: 'var(--text-secondary)',

@@ -11,11 +11,11 @@ const NAV_ITEMS = [
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <path
           d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"
-          stroke={active ? 'var(--accent)' : '#9ca3af'}
+          stroke={active ? 'var(--accent)' : 'var(--text-tertiary)'}
           strokeWidth="1.8"
           fill={active ? 'var(--accent-light)' : 'none'}
         />
-        <path d="M9 21V12h6v9" stroke={active ? 'var(--accent)' : '#9ca3af'} strokeWidth="1.8" />
+        <path d="M9 21V12h6v9" stroke={active ? 'var(--accent)' : 'var(--text-tertiary)'} strokeWidth="1.8" />
       </svg>
     ),
   },
@@ -25,10 +25,10 @@ const NAV_ITEMS = [
 
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="9" stroke={active ? 'var(--accent)' : '#9ca3af'} strokeWidth="1.8" />
+        <circle cx="12" cy="12" r="9" stroke={active ? 'var(--accent)' : 'var(--text-tertiary)'} strokeWidth="1.8" />
         <path
           d="M16.5 7.5l-3 6.5-6.5 3 3-6.5 6.5-3z"
-          stroke={active ? 'var(--accent)' : '#9ca3af'}
+          stroke={active ? 'var(--accent)' : 'var(--text-tertiary)'}
           strokeWidth="1.8"
           fill={active ? 'var(--accent)' : 'none'}
           fillOpacity={active ? 0.2 : 0}
@@ -53,11 +53,11 @@ const NAV_ITEMS = [
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <rect
           x="3" y="4" width="18" height="16" rx="2"
-          stroke={active ? 'var(--accent)' : '#9ca3af'}
+          stroke={active ? 'var(--accent)' : 'var(--text-tertiary)'}
           strokeWidth="1.8"
           fill={active ? 'var(--accent-light)' : 'none'}
         />
-        <path d="M7 9h10M7 13h6" stroke={active ? 'var(--accent)' : '#9ca3af'} strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M7 9h10M7 13h6" stroke={active ? 'var(--accent)' : 'var(--text-tertiary)'} strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
   },
@@ -68,13 +68,13 @@ const NAV_ITEMS = [
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle
           cx="12" cy="8" r="4"
-          stroke={active ? 'var(--accent)' : '#9ca3af'}
+          stroke={active ? 'var(--accent)' : 'var(--text-tertiary)'}
           strokeWidth="1.8"
           fill={active ? 'var(--accent-light)' : 'none'}
         />
         <path
           d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6"
-          stroke={active ? 'var(--accent)' : '#9ca3af'}
+          stroke={active ? 'var(--accent)' : 'var(--text-tertiary)'}
           strokeWidth="1.8"
           strokeLinecap="round"
         />
@@ -101,12 +101,15 @@ export default function MobileBottomNav() {
         left: 0,
         right: 0,
         zIndex: 90,
-        background: '#fff',
+        background: 'rgba(255, 255, 255, 0.97)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         borderTop: '1px solid var(--border)',
         alignItems: 'center',
         justifyContent: 'space-around',
         height: 64,
         padding: '0 4px',
+        paddingBottom: 'env(safe-area-inset-bottom, 0)',
         gap: 0,
       }}
     >
@@ -163,7 +166,7 @@ export default function MobileBottomNav() {
             <span style={{
               fontSize: 10,
               fontWeight: active ? 700 : 400,
-              color: active ? 'var(--accent)' : '#9ca3af',
+              color: active ? 'var(--accent)' : 'var(--text-tertiary)',
               lineHeight: 1,
             }}>
               {item.label}

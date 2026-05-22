@@ -64,7 +64,7 @@ export default function LocaleSwitcher() {
           <path d="M10 2a15.3 15.3 0 010 16M10 2a15.3 15.3 0 000 16M2 10h16" strokeLinecap="round" />
         </svg>
         <span>{current?.label}</span>
-        <span style={{ fontSize: 9, opacity: 0.6 }}>▾</span>
+        <span style={{ fontSize: 10, opacity: 0.6 }}>▾</span>
       </button>
 
       {open && (
@@ -75,7 +75,7 @@ export default function LocaleSwitcher() {
           minWidth: 130,
           background: '#fff',
           border: '1px solid var(--border)',
-          borderRadius: 10,
+          borderRadius: 8,
           boxShadow: '0 6px 20px rgba(0,0,0,0.10)',
           overflow: 'hidden',
           zIndex: 300,

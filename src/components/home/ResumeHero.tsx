@@ -70,7 +70,7 @@ export default function ResumeHero({ primary, secondary, userName }: Props) {
           </p>
           <h2
             style={{
-              fontSize: 26,
+              fontSize: 24,
               fontWeight: 800,
               letterSpacing: '-0.5px',
               color: '#1e1b4b',
@@ -121,7 +121,7 @@ export default function ResumeHero({ primary, secondary, userName }: Props) {
                 color: '#fff',
                 background: 'rgba(0,0,0,0.32)',
                 padding: '3px 9px',
-                borderRadius: 6,
+                borderRadius: 4,
                 backdropFilter: 'blur(4px)',
               }}
             >
@@ -211,7 +211,7 @@ export default function ResumeHero({ primary, secondary, userName }: Props) {
               alignItems: 'center',
               justifyContent: 'center',
               padding: '14px 22px',
-              borderRadius: 10,
+              borderRadius: 8,
               background: 'var(--accent)',
               color: '#fff',
               fontWeight: 800,

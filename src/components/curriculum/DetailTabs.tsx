@@ -88,7 +88,7 @@ export default function DetailTabs({
             {/* 이런 걸 배울 수 있어요 */}
             {(learningGoals.length > 0) && (
               <div style={{
-                border: '1px solid var(--border)', borderRadius: 14, padding: '24px',
+                border: '1px solid var(--border)', borderRadius: 12, padding: '24px',
                 display: 'flex', gap: 20, alignItems: 'flex-start',
               }}>
                 <div style={{ flex: 1 }}>
@@ -113,7 +113,7 @@ export default function DetailTabs({
                 {/* Robot illustration placeholder */}
                 <div style={{
                   width: 80, height: 80, flexShrink: 0,
-                  background: 'var(--accent-light)', borderRadius: 14,
+                  background: 'var(--accent-light)', borderRadius: 12,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'var(--accent)',
                 }}>
@@ -124,7 +124,7 @@ export default function DetailTabs({
 
             {/* 이 커리큘럼은 이런 분들에게 */}
             {targetAudience.length > 0 && (
-              <div style={{ border: '1px solid var(--border)', borderRadius: 14, padding: '24px' }}>
+              <div style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '24px' }}>
                 <h3 style={{ fontSize: 16, marginBottom: 16 }}>이 커리큘럼은 이런 분들에게 추천해요</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {targetAudience.map((t, i) => (
@@ -142,7 +142,7 @@ export default function DetailTabs({
 
             {/* 선행 지식 */}
             {prerequisites.length > 0 && (
-              <div style={{ border: '1px solid var(--border)', borderRadius: 14, padding: '24px' }}>
+              <div style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '24px' }}>
                 <h3 style={{ fontSize: 16, marginBottom: 16 }}>선행 지식</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {prerequisites.map((p, i) => (
@@ -156,7 +156,7 @@ export default function DetailTabs({
             )}
 
             {/* 커리큘럼 구조 (요약) */}
-            <div style={{ border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
               <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--divider)' }}>
                 <h3 style={{ fontSize: 16 }}>커리큘럼 구조</h3>
               </div>
@@ -196,10 +196,10 @@ export default function DetailTabs({
               <div style={{
                 display: 'flex', gap: 48, alignItems: 'flex-start',
                 marginBottom: 32, padding: '24px',
-                border: '1px solid var(--border)', borderRadius: 14,
+                border: '1px solid var(--border)', borderRadius: 12,
               }}>
                 <div style={{ textAlign: 'center', flexShrink: 0 }}>
-                  <p style={{ fontSize: 52, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>
+                  <p style={{ fontSize: 48, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
                     {avgRating.toFixed(1)}
                   </p>
                   <div style={{ display: 'flex', gap: 2, justifyContent: 'center', margin: '8px 0 4px' }}>

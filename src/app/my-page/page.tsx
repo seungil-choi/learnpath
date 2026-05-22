@@ -75,7 +75,7 @@ function MyPageLayout({
             width: 72, height: 72, borderRadius: 999, flexShrink: 0,
             background: 'var(--accent)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 28, fontWeight: 900, color: '#fff',
+            fontSize: 28, fontWeight: 800, color: '#fff',
             border: '3px solid rgba(255,255,255,0.2)',
           }}>
             {initial}
@@ -105,7 +105,7 @@ function MyPageLayout({
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, marginTop: 28, background: 'rgba(255,255,255,0.1)', borderRadius: 12, overflow: 'hidden' }} className="profile-stats-grid">
           {stats.map((s, i) => (
             <div key={s.label} style={{ padding: '16px 12px', textAlign: 'center', background: 'rgba(255,255,255,0.05)', borderRight: i < stats.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
-              <p style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 3 }}>{s.value}</p>
+              <p style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 3 }}>{s.value}</p>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>{s.label}</p>
             </div>
           ))}
@@ -116,12 +116,12 @@ function MyPageLayout({
       {inProgress.length > 0 && (
         <section style={{ marginBottom: 36 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <h2 style={{ fontSize: 17, fontWeight: 700 }}>이어보기</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700 }}>이어보기</h2>
             <Link href="/my-learning" style={{ fontSize: 13, color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>전체 보기 →</Link>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {inProgress.map((p: any) => (
-              <div key={p.id} style={{ display: 'flex', gap: 14, alignItems: 'center', border: '1px solid var(--border)', borderRadius: 14, padding: '14px', background: '#fff' }}>
+              <div key={p.id} style={{ display: 'flex', gap: 14, alignItems: 'center', border: '1px solid var(--border)', borderRadius: 12, padding: '14px', background: '#fff' }}>
                 <div style={{ width: 72, height: 52, borderRadius: 8, flexShrink: 0, background: grad(p.category) }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ fontWeight: 700, fontSize: 14, marginBottom: 6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.title}</p>
@@ -133,7 +133,7 @@ function MyPageLayout({
                   </div>
                   <p style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 4 }}>마지막 학습 {formatDate(p.lastDate ?? p.last_accessed_at)}</p>
                 </div>
-                <Link href={`/curriculum/${p.id}/learn`} style={{ padding: '9px 16px', borderRadius: 9, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap' }}>이어보기</Link>
+                <Link href={`/curriculum/${p.id}/learn`} style={{ padding: '9px 16px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap' }}>이어보기</Link>
               </div>
             ))}
           </div>
@@ -143,7 +143,7 @@ function MyPageLayout({
       {/* ── 완료 ── */}
       {completed.length > 0 && (
         <section style={{ marginBottom: 36 }}>
-          <h2 style={{ fontSize: 17, fontWeight: 700, marginBottom: 16 }}>완료한 학습 <span style={{ fontSize: 14, color: 'var(--success)', fontWeight: 600 }}>{completed.length}</span></h2>
+          <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>완료한 학습 <span style={{ fontSize: 14, color: 'var(--success)', fontWeight: 600 }}>{completed.length}</span></h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12 }}>
             {completed.map((c: any) => (
               <Link key={c.id} href={`/curriculum/${c.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -165,7 +165,7 @@ function MyPageLayout({
       {/* ── 저장한 커리큘럼 ── */}
       {saves.length > 0 && (
         <section style={{ marginBottom: 36 }}>
-          <h2 style={{ fontSize: 17, fontWeight: 700, marginBottom: 16 }}>저장한 커리큘럼 <span style={{ fontSize: 14, color: 'var(--text-tertiary)', fontWeight: 500 }}>{saves.length}</span></h2>
+          <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>저장한 커리큘럼 <span style={{ fontSize: 14, color: 'var(--text-tertiary)', fontWeight: 500 }}>{saves.length}</span></h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12 }}>
             {saves.map((s: any) => {
               const cur = s.curricula ?? s
@@ -188,8 +188,8 @@ function MyPageLayout({
       {/* ── 내가 만든 커리큘럼 ── */}
       <section>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <h2 style={{ fontSize: 17, fontWeight: 700 }}>내가 만든 커리큘럼</h2>
-          <Link href={isDemo ? '/auth' : '/create'} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 9, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700 }}>내가 만든 커리큘럼</h2>
+          <Link href={isDemo ? '/auth' : '/create'} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>
             + 새로 만들기
           </Link>
         </div>
@@ -199,14 +199,14 @@ function MyPageLayout({
               <PencilIcon size={48} style={{ color: 'var(--text-tertiary)' }} />
             </div>
             <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 20 }}>아직 만든 커리큘럼이 없어요</p>
-            <Link href={isDemo ? '/auth' : '/create'} style={{ display: 'inline-block', padding: '10px 22px', borderRadius: 9, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 14 }}>
+            <Link href={isDemo ? '/auth' : '/create'} style={{ display: 'inline-block', padding: '10px 22px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 14 }}>
               커리큘럼 만들기 →
             </Link>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {myCurricula.map((c: any) => (
-              <div key={c.id} style={{ display: 'flex', gap: 14, alignItems: 'center', border: '1px solid var(--border)', borderRadius: 14, padding: '14px', background: '#fff' }}>
+              <div key={c.id} style={{ display: 'flex', gap: 14, alignItems: 'center', border: '1px solid var(--border)', borderRadius: 12, padding: '14px', background: '#fff' }}>
                 <div style={{ width: 72, height: 52, borderRadius: 8, flexShrink: 0, background: grad(c.category) }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>

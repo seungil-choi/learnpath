@@ -248,7 +248,7 @@ export default function ExploreClient({ curricula, initialParams }: Props) {
               placeholder='"Claude 활용" 검색 결과'
               style={{
                 width: '100%', padding: '11px 14px 11px 40px',
-                border: '1.5px solid var(--border)', borderRadius: 10,
+                border: '1.5px solid var(--border)', borderRadius: 8,
                 fontSize: 14, fontFamily: 'inherit', outline: 'none',
                 background: '#fff', color: 'var(--text-primary)',
               }}
@@ -257,7 +257,7 @@ export default function ExploreClient({ curricula, initialParams }: Props) {
             />
           </div>
           <button type="submit" style={{
-            padding: '11px 20px', borderRadius: 10,
+            padding: '11px 20px', borderRadius: 8,
             background: 'var(--accent)', color: '#fff',
             border: 'none', fontWeight: 700, fontSize: 14,
             cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
@@ -266,7 +266,7 @@ export default function ExploreClient({ curricula, initialParams }: Props) {
           </button>
           {hasFilter && (
             <button type="button" onClick={handleReset} style={{
-              padding: '11px 14px', borderRadius: 10,
+              padding: '11px 14px', borderRadius: 8,
               border: '1px solid var(--border)', background: 'transparent',
               color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500,
               cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',

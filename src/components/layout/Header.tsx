@@ -12,7 +12,7 @@ import type { User } from '@supabase/supabase-js'
 function navStyle(active: boolean): React.CSSProperties {
   return {
     padding: '6px 12px',
-    borderRadius: 6,
+    borderRadius: 4,
     fontSize: 14,
     fontWeight: active ? 600 : 400,
     color: active ? 'var(--accent)' : 'var(--text-secondary)',
@@ -134,12 +134,12 @@ export default function Header() {
           marginRight: 6,
         }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
-            <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--accent)' }} />
-            <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--accent)', opacity: 0.55 }} />
-            <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--accent)', opacity: 0.35 }} />
-            <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--accent)', opacity: 0.75 }} />
+            <div style={{ width: 8, height: 8, borderRadius: 4, background: 'var(--accent)' }} />
+            <div style={{ width: 8, height: 8, borderRadius: 4, background: 'var(--accent)', opacity: 0.55 }} />
+            <div style={{ width: 8, height: 8, borderRadius: 4, background: 'var(--accent)', opacity: 0.35 }} />
+            <div style={{ width: 8, height: 8, borderRadius: 4, background: 'var(--accent)', opacity: 0.75 }} />
           </div>
-          <span style={{ fontWeight: 800, fontSize: 17, color: 'var(--accent)', letterSpacing: '-0.5px' }}>
+          <span style={{ fontWeight: 800, fontSize: 18, color: 'var(--accent)', letterSpacing: '-0.5px' }}>
             LearnPath
           </span>
         </Link>
@@ -191,7 +191,7 @@ export default function Header() {
             <kbd style={{
               position: 'absolute', right: 8,
               fontSize: 10, color: 'var(--text-tertiary)',
-              background: 'var(--border)', borderRadius: 3,
+              background: 'var(--border)', borderRadius: 4,
               padding: '1px 5px', fontFamily: 'inherit', letterSpacing: '0.2px',
             }}>⌘K</kbd>
           </div>
@@ -273,7 +273,7 @@ export default function Header() {
                     width: 232,
                     background: '#fff',
                     border: '1px solid var(--border)',
-                    borderRadius: 14,
+                    borderRadius: 12,
                     boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
                     overflow: 'hidden',
                     zIndex: 200,

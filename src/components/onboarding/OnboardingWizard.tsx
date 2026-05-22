@@ -256,7 +256,7 @@ export default function OnboardingWizard({
                   display: 'flex', alignItems: 'center', gap: 16,
                   padding: '16px 20px',
                   border: idx === 0 ? `2px solid ${accent}` : '1.5px solid var(--border)',
-                  borderRadius: 14,
+                  borderRadius: 12,
                   background: idx === 0 ? 'var(--accent-light)' : '#fff',
                   cursor: 'pointer',
                   transition: 'border-color 150ms, box-shadow 150ms',

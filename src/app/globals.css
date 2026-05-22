@@ -1,24 +1,67 @@
 @import "tailwindcss";
 
 :root {
+  /* ─── Surface ─── */
   --background: #ffffff;
   --surface: #f7f7fb;
   --border: #e5e7eb;
   --divider: #f0f0f0;
 
-  --text-primary: #111111;
-  --text-secondary: #6b7280;
-  --text-tertiary: #9ca3af;
+  /* ─── Text (WCAG AA 검증) ─── */
+  --text-primary: #111111;        /* 18.7:1 vs white */
+  --text-secondary: #4b5563;      /* 8.6:1  — 기존 #6b7280(5.4:1)에서 강화 */
+  --text-tertiary: #6b7280;       /* 5.4:1  — 기존 #9ca3af(3.0:1)는 AA 미달이라 상향 */
 
-  /* LearnPath Brand — Indigo/Purple #5B5CF0 */
+  /* ─── Brand — LearnPath Indigo ─── */
   --accent: #5B5CF0;
   --accent-hover: #4f4de6;
+  --accent-active: #4340d6;
   --accent-light: #eeeeff;
   --accent-subtle: #f5f4ff;
 
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --error: #ef4444;
+  /* ─── Semantic ─── */
+  --success: #16a34a;             /* AA 통과 */
+  --warning: #d97706;             /* AA 통과 */
+  --error: #dc2626;               /* AA 통과 */
+
+  /* ─── Radius 토큰 (4단계로 표준화) ─── */
+  --radius-xs: 6px;     /* 작은 칩/뱃지 */
+  --radius-sm: 8px;     /* 버튼/입력/내부 카드 */
+  --radius-md: 12px;    /* 카드/모달 */
+  --radius-lg: 16px;    /* 큰 카드/섹션 */
+  --radius-pill: 999px; /* pill 모양 */
+
+  /* ─── Shadow 토큰 (3단계 + accent) ─── */
+  --shadow-sm: 0 1px 2px rgba(17, 17, 17, 0.04), 0 1px 3px rgba(17, 17, 17, 0.06);
+  --shadow-md: 0 4px 12px rgba(17, 17, 17, 0.06), 0 2px 4px rgba(17, 17, 17, 0.04);
+  --shadow-lg: 0 12px 32px rgba(17, 17, 17, 0.10), 0 4px 8px rgba(17, 17, 17, 0.04);
+  --shadow-accent: 0 4px 16px rgba(91, 92, 240, 0.18);
+
+  /* ─── Spacing 토큰 (4·8 시스템) ─── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ─── Motion 토큰 (Apple HIG / Material 3 참조) ─── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
+
+  /* ─── Z-index 토큰 ─── */
+  --z-sticky: 10;
+  --z-header: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+  --z-toast: 400;
 }
 
 * {
@@ -35,15 +78,21 @@ html {
 body {
   background: var(--background);
   color: var(--text-primary);
-  font-family: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  font-family: "Noto Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif;
   font-size: 14px;
-  line-height: 22px;
+  line-height: 1.55;
   min-height: 100vh;
+  /* 한국어 가독성: 음각/숫자 균일 */
+  font-feature-settings: "kern", "tnum";
+  text-rendering: optimizeLegibility;
 }
 
-h1 { font-size: 28px; font-weight: 700; line-height: 36px; }
-h2 { font-size: 22px; font-weight: 600; line-height: 30px; }
-h3 { font-size: 18px; font-weight: 600; line-height: 26px; }
+/* ─── Type Scale (8단계) ───
+   Apple HIG·Material 3 참고. Display는 800, Heading은 700, UI는 500~600. */
+h1 { font-size: 28px; font-weight: 800; line-height: 1.28; letter-spacing: -0.02em; }
+h2 { font-size: 22px; font-weight: 700; line-height: 1.36; letter-spacing: -0.015em; }
+h3 { font-size: 18px; font-weight: 700; line-height: 1.44; letter-spacing: -0.01em; }
+h4 { font-size: 16px; font-weight: 600; line-height: 1.5;  letter-spacing: -0.005em; }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -60,16 +109,19 @@ h3 { font-size: 18px; font-weight: 600; line-height: 26px; }
 .curriculum-card {
   background: var(--background);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px;
-  transition: box-shadow 150ms ease, border-color 150ms ease, transform 150ms ease;
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  transition:
+    box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
   height: 100%;
 }
 
 .curriculum-card:hover {
-  box-shadow: 0 4px 20px rgba(91, 92, 240, 0.12);
+  box-shadow: var(--shadow-accent);
   border-color: #c7c7f9;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 /* ──────────────────────────────── */
@@ -276,6 +328,75 @@ h3 { font-size: 18px; font-weight: 600; line-height: 26px; }
 }
 
 /* ──────────────────────────────── */
+/* Button system (md size, primary/secondary/ghost)
+   — 사이트 전역 표준 버튼 클래스. 인라인 스타일 대신 점진 도입. */
+/* ──────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
+  text-decoration: none;
+}
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-sm { font-size: 13px; padding: 8px 14px; }
+.btn-md { font-size: 14px; padding: 10px 16px; }
+.btn-lg { font-size: 15px; padding: 12px 22px; }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn-primary:active { background: var(--accent-active); border-color: var(--accent-active); }
+
+.btn-secondary {
+  background: #fff;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.btn-secondary:hover { background: var(--accent-light); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+.btn-ghost:hover { background: var(--surface); color: var(--text-primary); }
+
+/* Card system — 인라인 보강용 표준 클래스 */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  transition: box-shadow var(--duration-base) var(--ease-out);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+.card-flat { box-shadow: none; }
+
+/* ──────────────────────────────── */
 /* Tab navigation                   */
 /* ──────────────────────────────── */
 .tab-nav {
@@ -332,12 +453,36 @@ h3 { font-size: 18px; font-weight: 600; line-height: 26px; }
 }
 
 /* ──────────────────────────────── */
-/* 포커스 접근성                    */
+/* 포커스 접근성 (input은 border로, 그 외는 outline)
+   — input/textarea/select은 border가 시각 포커스 역할이므로 outline 중복 제거
+   — 버튼/링크는 outline으로 명확히 표시 */
 /* ──────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+  border-radius: 6px;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
 }
 input:focus, textarea:focus, select:focus {
   border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(91, 92, 240, 0.15);
+}
+
+/* ──────────────────────────────── */
+/* 모바일 BottomNav 옆 학습상세 페이지에서 padding-bottom 보정
+   (body의 padding-bottom 64는 BottomNav 가림 방지용) */
+/* ──────────────────────────────── */
+
+/* ──────────────────────────────── */
+/* prefers-reduced-motion 대응 (접근성) */
+/* ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

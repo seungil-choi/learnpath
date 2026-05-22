@@ -8,7 +8,8 @@ import { ToastProvider } from '@/components/ui/Toast'
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  // 디스플레이 텍스트(Hero, 통계)용으로 800 추가. 900은 사용하지 않음(800으로 통일).
+  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 })
 

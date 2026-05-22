@@ -89,7 +89,7 @@ export default function StepComments({ stepId, userId, curriculumId }: Props) {
             style={{
               width: '100%',
               padding: '12px 14px',
-              borderRadius: 10,
+              borderRadius: 8,
               border: '1px solid var(--border)',
               fontSize: 14,
               fontFamily: 'inherit',
@@ -126,7 +126,7 @@ export default function StepComments({ stepId, userId, curriculumId }: Props) {
         <div style={{
           marginBottom: 24,
           padding: '14px 16px',
-          borderRadius: 10,
+          borderRadius: 8,
           background: 'var(--surface)',
           border: '1px solid var(--border)',
           fontSize: 13,

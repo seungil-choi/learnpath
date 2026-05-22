@@ -24,7 +24,7 @@ export default function NotFound() {
       </div>
 
       <p style={{
-        fontSize: 72, fontWeight: 900, lineHeight: 1,
+        fontSize: 64, fontWeight: 800, lineHeight: 1,
         background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
@@ -44,14 +44,14 @@ export default function NotFound() {
 
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
         <Link href="/" style={{
-          padding: '12px 24px', borderRadius: 10,
+          padding: '12px 24px', borderRadius: 8,
           background: 'var(--accent)', color: '#fff',
           textDecoration: 'none', fontWeight: 700, fontSize: 15,
         }}>
           홈으로 돌아가기
         </Link>
         <Link href="/explore" style={{
-          padding: '12px 24px', borderRadius: 10,
+          padding: '12px 24px', borderRadius: 8,
           border: '1.5px solid var(--accent)', color: 'var(--accent)',
           textDecoration: 'none', fontWeight: 700, fontSize: 15,
           background: '#fff',

@@ -466,7 +466,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
       <button onClick={addStep} style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         width: '100%', marginTop: 12, padding: '14px',
-        border: '1.5px dashed var(--border)', borderRadius: 10,
+        border: '1.5px dashed var(--border)', borderRadius: 8,
         background: 'var(--surface)', color: 'var(--text-tertiary)',
         cursor: 'pointer', fontSize: 14, fontFamily: 'inherit',
         transition: 'border-color 150ms, color 150ms',
@@ -505,7 +505,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
       </div>
 
       {/* 발행 체크리스트 */}
-      <div style={{ border: '1px solid var(--border)', borderRadius: 14, padding: 20 }}>
+      <div style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 20 }}>
         <p style={{ fontWeight: 700, fontSize: 15, marginBottom: 14 }}>발행 전 체크리스트</p>
         {[
           { label: '제목이 입력됐어요', ok: title.trim().length >= 2 },
@@ -614,7 +614,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
           return (
             <button key={i} onClick={() => i < wizardStep && setWizardStep(i)} style={{
               display: 'flex', alignItems: 'flex-start', gap: 12,
-              width: '100%', padding: '10px 12px', borderRadius: 10, marginBottom: 4,
+              width: '100%', padding: '10px 12px', borderRadius: 8, marginBottom: 4,
               border: 'none', background: isCurrent ? 'var(--accent-light)' : 'transparent',
               cursor: i < wizardStep ? 'pointer' : 'default',
               textAlign: 'left', fontFamily: 'inherit',
@@ -642,10 +642,10 @@ export default function CreateWizard({ userId, curriculum }: Props) {
 
         {/* Mini card preview */}
         {title && (
-          <div style={{ marginTop: 20, padding: 12, background: '#fff', borderRadius: 10, border: '1px solid var(--border)' }}>
+          <div style={{ marginTop: 20, padding: 12, background: '#fff', borderRadius: 8, border: '1px solid var(--border)' }}>
             <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-tertiary)', marginBottom: 6, textTransform: 'uppercase' }}>미리보기</p>
             <div style={{
-              aspectRatio: '16/9', borderRadius: 6, marginBottom: 8,
+              aspectRatio: '16/9', borderRadius: 4, marginBottom: 8,
               background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)',
               overflow: 'hidden',
             }}>
@@ -689,7 +689,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
               disabled={wizardStep === 0}
               style={{
                 display: 'flex', alignItems: 'center', gap: 6,
-                padding: '11px 20px', borderRadius: 9,
+                padding: '11px 20px', borderRadius: 8,
                 border: '1px solid var(--border)', background: 'transparent',
                 color: 'var(--text-secondary)',
                 cursor: wizardStep === 0 ? 'not-allowed' : 'pointer',
@@ -704,7 +704,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
               {wizardStep === WIZARD_STEPS.length - 1 ? (
                 <>
                   <button onClick={() => save(false)} disabled={saving} style={{
-                    padding: '11px 20px', borderRadius: 9,
+                    padding: '11px 20px', borderRadius: 8,
                     border: '1px solid var(--border)', background: 'transparent',
                     color: 'var(--text-secondary)', cursor: 'pointer',
                     fontSize: 14, fontFamily: 'inherit', opacity: saving ? 0.6 : 1,
@@ -712,7 +712,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
                     임시 저장
                   </button>
                   <button onClick={() => save(true)} disabled={saving} style={{
-                    padding: '11px 24px', borderRadius: 9,
+                    padding: '11px 24px', borderRadius: 8,
                     border: 'none', background: 'var(--accent)', color: '#fff',
                     fontWeight: 700, fontSize: 14, cursor: 'pointer',
                     fontFamily: 'inherit', opacity: saving ? 0.6 : 1,
@@ -726,7 +726,7 @@ export default function CreateWizard({ userId, curriculum }: Props) {
                   onClick={() => { if (canProceed) setWizardStep(w => w + 1) }}
                   disabled={!canProceed}
                   style={{
-                    padding: '11px 24px', borderRadius: 9,
+                    padding: '11px 24px', borderRadius: 8,
                     border: 'none', background: canProceed ? 'var(--accent)' : 'var(--border)',
                     color: canProceed ? '#fff' : 'var(--text-tertiary)',
                     fontWeight: 700, fontSize: 14,
@@ -834,7 +834,7 @@ function StepCard({ step, idx, isOnly, isFirst, isLast, onUpdate, onRemove, onMo
   const [expanded, setExpanded] = useState(true)
 
   const btnStyle = (disabled: boolean): React.CSSProperties => ({
-    width: 26, height: 26, borderRadius: 5,
+    width: 26, height: 26, borderRadius: 4,
     border: `1px solid ${disabled ? 'var(--border)' : 'var(--border)'}`,
     background: 'transparent',
     cursor: disabled ? 'not-allowed' : 'pointer',
@@ -879,7 +879,7 @@ function StepCard({ step, idx, isOnly, isFirst, isLast, onUpdate, onRemove, onMo
         }}>필수</span>
         <div style={{ display: 'flex', gap: 3, flexShrink: 0 }}>
           <button onClick={() => setExpanded(e => !e)} style={{
-            width: 28, height: 28, borderRadius: 6, border: '1px solid var(--border)',
+            width: 28, height: 28, borderRadius: 4, border: '1px solid var(--border)',
             background: 'transparent', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 12, color: 'var(--text-tertiary)',
@@ -888,7 +888,7 @@ function StepCard({ step, idx, isOnly, isFirst, isLast, onUpdate, onRemove, onMo
           </button>
           {!isOnly && (
             <button onClick={() => onRemove(step.id)} style={{
-              width: 28, height: 28, borderRadius: 6, border: '1px solid #fca5a5',
+              width: 28, height: 28, borderRadius: 4, border: '1px solid #fca5a5',
               background: '#fff1f1', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 13, color: 'var(--error)',
@@ -962,7 +962,7 @@ function StepCard({ step, idx, isOnly, isFirst, isLast, onUpdate, onRemove, onMo
                     onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)' }}
                     onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)' }} />
                   <button onClick={() => onRemoveResource(step.id, r.id)} style={{
-                    width: 28, height: 28, borderRadius: 6, border: '1px solid var(--border)',
+                    width: 28, height: 28, borderRadius: 4, border: '1px solid var(--border)',
                     background: 'transparent', cursor: 'pointer',
                     color: 'var(--text-tertiary)', fontSize: 14, flexShrink: 0,
                   }}>✕</button>
@@ -973,7 +973,7 @@ function StepCard({ step, idx, isOnly, isFirst, isLast, onUpdate, onRemove, onMo
 
           <button onClick={() => onAddResource(step.id)} style={{
             alignSelf: 'flex-start', padding: '6px 12px',
-            borderRadius: 6, border: '1px dashed var(--border)',
+            borderRadius: 4, border: '1px dashed var(--border)',
             background: 'var(--surface)', color: 'var(--text-secondary)',
             cursor: 'pointer', fontSize: 12, fontFamily: 'inherit',
           }}>

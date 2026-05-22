@@ -16,7 +16,7 @@ export default function FooterLocale() {
         color: 'rgba(255,255,255,0.35)',
         padding: '4px 10px',
         border: '1px solid rgba(255,255,255,0.1)',
-        borderRadius: 6,
+        borderRadius: 4,
         background: 'none',
         cursor: 'pointer',
         fontFamily: 'inherit',

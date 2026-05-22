@@ -64,7 +64,7 @@ function AuthForm() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 16 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
             {[1, 0.55, 0.35, 0.75].map((op, i) => (
-              <div key={i} style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--accent)', opacity: op }} />
+              <div key={i} style={{ width: 8, height: 8, borderRadius: 4, background: 'var(--accent)', opacity: op }} />
             ))}
           </div>
           <span style={{ fontWeight: 800, fontSize: 18, color: 'var(--accent)', letterSpacing: '-0.5px' }}>LearnPath</span>
@@ -78,7 +78,7 @@ function AuthForm() {
       {/* Google */}
       <button onClick={handleGoogle} style={{
         width: '100%', padding: '12px',
-        borderRadius: 10, border: '1px solid var(--border)', background: '#fff',
+        borderRadius: 8, border: '1px solid var(--border)', background: '#fff',
         cursor: 'pointer', fontSize: 14, fontWeight: 500, fontFamily: 'inherit',
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         marginBottom: 16, transition: 'border-color 150ms, box-shadow 150ms',
@@ -117,7 +117,7 @@ function AuthForm() {
           type="email" value={email} onChange={e => setEmail(e.target.value)}
           placeholder="이메일 주소" required
           style={{
-            padding: '12px 14px', borderRadius: 10,
+            padding: '12px 14px', borderRadius: 8,
             border: '1px solid var(--border)', fontSize: 14,
             fontFamily: 'inherit', outline: 'none',
             transition: 'border-color 150ms',
@@ -126,7 +126,7 @@ function AuthForm() {
           onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
         />
         <button type="submit" disabled={loading || !email} style={{
-          padding: '12px', borderRadius: 10, border: 'none',
+          padding: '12px', borderRadius: 8, border: 'none',
           background: email ? 'var(--accent)' : 'var(--surface)',
           color: email ? '#fff' : 'var(--text-tertiary)',
           fontWeight: 700, fontSize: 14,
@@ -161,13 +161,13 @@ export default function AuthPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
             {[1, 0.55, 0.35, 0.75].map((op, i) => (
-              <div key={i} style={{ width: 10, height: 10, borderRadius: 2.5, background: 'var(--accent)', opacity: op }} />
+              <div key={i} style={{ width: 10, height: 10, borderRadius: 4, background: 'var(--accent)', opacity: op }} />
             ))}
           </div>
           <span style={{ fontWeight: 800, fontSize: 22, color: 'var(--accent)', letterSpacing: '-0.5px' }}>LearnPath</span>
         </div>
 
-        <h2 style={{ fontSize: 36, fontWeight: 900, lineHeight: '48px', letterSpacing: '-0.8px', marginBottom: 16, color: '#1e1b4b' }}>
+        <h2 style={{ fontSize: 32, fontWeight: 800, lineHeight: '48px', letterSpacing: '-0.8px', marginBottom: 16, color: '#1e1b4b' }}>
           배움이<br />
           <span style={{ background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             이어지는
@@ -187,7 +187,7 @@ export default function AuthPage() {
           ].map(item => (
             <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
-                width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                width: 36, height: 36, borderRadius: 8, flexShrink: 0,
                 background: 'rgba(91,92,240,0.12)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: 'var(--accent)',

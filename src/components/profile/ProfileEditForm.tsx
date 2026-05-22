@@ -85,7 +85,7 @@ export default function ProfileEditForm({ userId, initialUsername, initialBio }:
               maxLength={30}
               style={{
                 width: '100%', padding: '11px 14px',
-                borderRadius: 9, border: '1px solid var(--border)',
+                borderRadius: 8, border: '1px solid var(--border)',
                 fontSize: 14, fontFamily: 'inherit', outline: 'none',
                 transition: 'border-color 150ms',
               }}
@@ -105,7 +105,7 @@ export default function ProfileEditForm({ userId, initialUsername, initialBio }:
               maxLength={100}
               style={{
                 width: '100%', padding: '11px 14px',
-                borderRadius: 9, border: '1px solid var(--border)',
+                borderRadius: 8, border: '1px solid var(--border)',
                 fontSize: 14, fontFamily: 'inherit', outline: 'none',
                 resize: 'none', lineHeight: '22px',
                 transition: 'border-color 150ms',
@@ -122,7 +122,7 @@ export default function ProfileEditForm({ userId, initialUsername, initialBio }:
         <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
           <button onClick={() => setEditing(false)} style={{
             flex: 1, padding: '12px',
-            borderRadius: 9, border: '1px solid var(--border)',
+            borderRadius: 8, border: '1px solid var(--border)',
             background: 'transparent', color: 'var(--text-secondary)',
             fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500,
           }}>
@@ -130,7 +130,7 @@ export default function ProfileEditForm({ userId, initialUsername, initialBio }:
           </button>
           <button onClick={handleSave} disabled={saving || !username.trim()} style={{
             flex: 2, padding: '12px',
-            borderRadius: 9, border: 'none',
+            borderRadius: 8, border: 'none',
             background: username.trim() ? 'var(--accent)' : 'var(--border)',
             color: username.trim() ? '#fff' : 'var(--text-tertiary)',
             fontSize: 14, fontWeight: 700, cursor: saving || !username.trim() ? 'not-allowed' : 'pointer',

@@ -52,7 +52,7 @@ export default function FooterSocialLinks() {
           rel="noopener noreferrer"
           aria-label={s.label}
           style={{
-            width: 32, height: 32, borderRadius: 7,
+            width: 32, height: 32, borderRadius: 8,
             background: 'rgba(255,255,255,0.08)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'rgba(255,255,255,0.55)',

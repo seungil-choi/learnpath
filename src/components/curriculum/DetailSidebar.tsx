@@ -131,7 +131,7 @@ export default function DetailSidebar({
               justifyContent: 'center',
               gap: 8,
               padding: '14px 0',
-              borderRadius: 10,
+              borderRadius: 8,
               background: 'var(--accent)',
               color: '#fff',
               textDecoration: 'none',
@@ -149,7 +149,7 @@ export default function DetailSidebar({
               <span style={{
                 fontSize: 11,
                 background: 'rgba(255,255,255,0.25)',
-                borderRadius: 6,
+                borderRadius: 4,
                 padding: '2px 7px',
                 fontWeight: 600,
               }}>
@@ -169,7 +169,7 @@ export default function DetailSidebar({
               gap: 6,
               width: '100%',
               padding: '11px 0',
-              borderRadius: 10,
+              borderRadius: 8,
               border: `1px solid ${saved ? 'var(--accent)' : 'var(--border)'}`,
               background: saved ? 'var(--accent-light)' : 'transparent',
               color: saved ? 'var(--accent)' : 'var(--text-secondary)',
@@ -259,7 +259,7 @@ export default function DetailSidebar({
       {targetAudience.length > 0 && (
         <div style={{
           border: '1px solid var(--border)',
-          borderRadius: 14,
+          borderRadius: 12,
           padding: '18px',
           background: '#fff',
         }}>
@@ -289,7 +289,7 @@ export default function DetailSidebar({
       {completionResult && (
         <div style={{
           border: '1px solid #86efac',
-          borderRadius: 14,
+          borderRadius: 12,
           padding: '18px',
           background: '#f0fdf4',
         }}>
@@ -319,7 +319,7 @@ export default function DetailSidebar({
       {steps.length > 0 && (
         <div style={{
           border: '1px solid var(--border)',
-          borderRadius: 14,
+          borderRadius: 12,
           padding: '18px',
           background: '#fff',
         }}>

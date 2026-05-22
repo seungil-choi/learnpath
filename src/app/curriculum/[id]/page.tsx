@@ -184,7 +184,7 @@ export default async function CurriculumDetailPage({
 
               {/* Title */}
               <h1 style={{
-                fontSize: 30,
+                fontSize: 28,
                 fontWeight: 800,
                 letterSpacing: '-0.6px',
                 lineHeight: '42px',
@@ -262,7 +262,7 @@ export default async function CurriculumDetailPage({
             <div style={{
               width: 200,
               aspectRatio: '4/3',
-              borderRadius: 14,
+              borderRadius: 12,
               overflow: 'hidden',
               background: 'rgba(255,255,255,0.12)',
               flexShrink: 0,

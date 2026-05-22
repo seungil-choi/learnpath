@@ -53,7 +53,7 @@ export default function HomeCategorySection({ curricula, categories }: Props) {
       <div>
         <div style={{
           border: '1px solid var(--border)',
-          borderRadius: 14,
+          borderRadius: 12,
           overflow: 'hidden',
           background: '#fff',
           position: 'sticky',
@@ -148,7 +148,7 @@ export default function HomeCategorySection({ curricula, categories }: Props) {
         ) : (
           <div style={{
             textAlign: 'center', padding: '60px 24px',
-            border: '1px dashed var(--border)', borderRadius: 14,
+            border: '1px dashed var(--border)', borderRadius: 12,
           }}>
             <SearchIcon size={48} style={{ color: 'var(--text-tertiary)', marginBottom: 12 }} />
             <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 6 }}>

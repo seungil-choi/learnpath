@@ -214,7 +214,7 @@ export default function StepAccordion({ steps, completedStepIds, curriculumId }:
                     href={`/curriculum/${curriculumId}/learn?step=${idx}`}
                     style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                      padding: '11px 0', borderRadius: 9,
+                      padding: '11px 0', borderRadius: 8,
                       background: isCompleted ? 'var(--success)' : 'var(--accent)',
                       color: '#fff', textDecoration: 'none',
                       fontSize: 14, fontWeight: 700,

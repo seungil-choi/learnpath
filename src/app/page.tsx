@@ -148,7 +148,7 @@ export default async function HomePage() {
 
             <h1 style={{
               fontSize: 48,
-              fontWeight: 900,
+              fontWeight: 800,
               lineHeight: '60px',
               letterSpacing: '-1.2px',
               marginBottom: 20,
@@ -182,7 +182,7 @@ export default async function HomePage() {
               <Link href="/#explore" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
                 padding: '13px 24px',
-                borderRadius: 10,
+                borderRadius: 8,
                 background: 'var(--accent)',
                 color: '#fff',
                 textDecoration: 'none',
@@ -195,7 +195,7 @@ export default async function HomePage() {
               <Link href="/create" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
                 padding: '13px 24px',
-                borderRadius: 10,
+                borderRadius: 8,
                 border: '1.5px solid var(--accent)',
                 color: 'var(--accent)',
                 textDecoration: 'none',
@@ -307,7 +307,7 @@ export default async function HomePage() {
                   transform: 'translateY(-50%)',
                   background: '#fff',
                   border: '1px solid var(--border)',
-                  borderRadius: 10,
+                  borderRadius: 8,
                   padding: '8px 12px',
                   whiteSpace: 'nowrap',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
@@ -419,7 +419,7 @@ export default async function HomePage() {
             <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 12 }}>
               • 지금 바로 시작하세요
             </p>
-            <h2 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.5px', marginBottom: 10 }}>
+            <h2 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.5px', marginBottom: 10 }}>
               나만의 <span style={{ color: 'var(--accent)' }}>학습 여정</span>을 시작하세요
             </h2>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: '22px' }}>
@@ -429,7 +429,7 @@ export default async function HomePage() {
           <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
             <Link href="/#explore" style={{
               padding: '12px 22px',
-              borderRadius: 10,
+              borderRadius: 8,
               border: '1.5px solid var(--accent)',
               color: 'var(--accent)',
               textDecoration: 'none',
@@ -442,7 +442,7 @@ export default async function HomePage() {
             </Link>
             <Link href="/create" style={{
               padding: '12px 22px',
-              borderRadius: 10,
+              borderRadius: 8,
               background: 'var(--accent)',
               color: '#fff',
               textDecoration: 'none',
@@ -478,7 +478,7 @@ export default async function HomePage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
                   {[1,0.55,0.35,0.75].map((op, i) => (
-                    <div key={i} style={{ width: 7, height: 7, borderRadius: 2, background: '#fff', opacity: op }} />
+                    <div key={i} style={{ width: 7, height: 7, borderRadius: 4, background: '#fff', opacity: op }} />
                   ))}
                 </div>
                 <span style={{ fontWeight: 800, fontSize: 16, letterSpacing: '-0.5px' }}>LearnPath</span>

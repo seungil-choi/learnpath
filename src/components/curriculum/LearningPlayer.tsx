@@ -150,7 +150,7 @@ function ArticleViewer({ url, title }: { url: string; title: string | null }) {
       }}
     >
       <div style={{
-        width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+        width: 40, height: 40, borderRadius: 8, flexShrink: 0,
         background: 'rgba(59,130,246,0.10)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
@@ -484,7 +484,7 @@ export default function LearningPlayer({
                 className="resource-link-compact"
               >
                 <div style={{
-                  width: 32, height: 32, borderRadius: 6, flexShrink: 0,
+                  width: 32, height: 32, borderRadius: 4, flexShrink: 0,
                   background: `${RESOURCE_TYPE_COLOR[r.type] ?? '#6b7280'}18`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
@@ -554,7 +554,7 @@ export default function LearningPlayer({
       {FEATURES.AI_SUMMARY && (
         <div style={{
           border: '1px solid var(--border)',
-          borderRadius: 10,
+          borderRadius: 8,
           padding: '14px',
           background: 'var(--surface)',
         }}>
@@ -661,7 +661,7 @@ export default function LearningPlayer({
             style={{
               padding: '6px 10px',
               border: '1px solid var(--border)',
-              borderRadius: 6,
+              borderRadius: 4,
               background: 'transparent',
               cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -829,7 +829,7 @@ export default function LearningPlayer({
             <div style={{
               background: 'var(--accent-light)',
               border: '1px solid #c7c7f9',
-              borderRadius: 10,
+              borderRadius: 8,
               padding: '16px 20px',
               marginBottom: 24,
               display: 'flex',
@@ -962,7 +962,7 @@ export default function LearningPlayer({
               marginTop: 32,
               background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
               border: '1px solid #86efac',
-              borderRadius: 14, padding: '28px 24px',
+              borderRadius: 12, padding: '28px 24px',
               textAlign: 'center',
             }}>
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
