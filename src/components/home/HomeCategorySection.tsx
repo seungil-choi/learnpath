@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import CurriculumCard from '@/components/curriculum/CurriculumCard'
+import PathEmptyState from '@/components/ui/PathEmptyState'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
-import { SearchIcon, AiIcon, CodeIcon, DesignIcon, BusinessIcon, ProductivityIcon } from '@/components/ui/icons'
+import { AiIcon, CodeIcon, DesignIcon, BusinessIcon, ProductivityIcon } from '@/components/ui/icons'
 
 // 아이콘은 Client Component 내부에서 직접 관리 (Server→Client prop으로 함수 전달 불가)
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ size?: number; style?: React.CSSProperties }>> = {
@@ -146,23 +147,12 @@ export default function HomeCategorySection({ curricula, categories }: Props) {
             ))}
           </div>
         ) : (
-          <div style={{
-            textAlign: 'center', padding: '60px 24px',
-            border: '1px dashed var(--border)', borderRadius: 12,
-          }}>
-            <SearchIcon size={48} style={{ color: 'var(--text-tertiary)', marginBottom: 12 }} />
-            <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 6 }}>
-              해당 카테고리에 커리큘럼이 없어요
-            </p>
-            <Link href="/create" style={{
-              display: 'inline-block', marginTop: 16,
-              padding: '10px 18px', borderRadius: 8,
-              background: 'var(--accent)', color: '#fff',
-              textDecoration: 'none', fontWeight: 600, fontSize: 13,
-            }}>
-              첫 번째로 만들기 →
-            </Link>
-          </div>
+          <PathEmptyState
+            message="아직 이 분야의 길이 없어요"
+            desc="내가 배운 순서가 누군가의 첫걸음이 됩니다"
+            cta="첫 번째 Path 만들기"
+            href="/create"
+          />
         )}
       </div>
 

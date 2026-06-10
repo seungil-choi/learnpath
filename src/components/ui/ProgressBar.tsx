@@ -16,9 +16,12 @@ export default function ProgressBar({ percent, showLabel = false }: ProgressBarP
         <div style={{
           height: '100%',
           width: `${Math.min(percent, 100)}%`,
-          background: percent === 100 ? 'var(--success)' : 'var(--accent)',
+          // 진행은 감정이다 — 100% 도달 시 시그니처 그라데이션
+          background: percent === 100
+            ? 'linear-gradient(90deg, var(--accent) 0%, #818cf8 100%)'
+            : 'var(--accent)',
           borderRadius: 999,
-          transition: 'width 300ms ease',
+          transition: 'width 600ms var(--ease-out, ease)',
         }} />
       </div>
       {showLabel && (

@@ -8,6 +8,7 @@ import { track } from '@/lib/analytics/track'
 import type { StepWithResources, Progress } from '@/lib/supabase/types'
 import { MenuIcon, CheckIcon, CheckCircleIcon, MessageCircleIcon, BookOpenIcon, SparkleIcon } from '@/components/ui/icons'
 import { FEATURES } from '@/lib/featureFlags'
+import PathCelebration from '@/components/curriculum/PathCelebration'
 
 interface Props {
   curriculum: { id: string; title: string }
@@ -257,6 +258,7 @@ export default function LearningPlayer({
     new Set(initialProgress?.completed_steps ?? [])
   )
   const [showAuthPrompt, setShowAuthPrompt] = useState(false)
+  const [showCelebration, setShowCelebration] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [mobileTab, setMobileTab] = useState<'content' | 'toc' | 'resources' | 'qa'>('content')
   const [noteText, setNoteText] = useState('')
@@ -327,9 +329,14 @@ export default function LearningPlayer({
   const handleToggleComplete = async () => {
     const stepId = currentStep.id
     const next = new Set(completedSteps)
-    if (next.has(stepId)) next.delete(stepId)
+    const wasComplete = next.has(stepId)
+    if (wasComplete) next.delete(stepId)
     else next.add(stepId)
     setCompletedSteps(next)
+    // 마지막 Step을 막 완료해서 100%가 된 순간 — 시그니처 축하
+    if (!wasComplete && next.size === totalSteps) {
+      setShowCelebration(true)
+    }
     await saveProgress(next, stepId)
   }
 
@@ -389,49 +396,72 @@ export default function LearningPlayer({
         </div>
       </div>
 
-      {/* Step list */}
+      {/* Step list — Path 지도 (노드 + 연결선)
+          완료: 채워진 노드 + 실선 / 현재: 강조 링 노드 / 이후: 빈 노드 + 점선 */}
       <nav style={{ flex: 1, overflowY: 'auto', padding: '8px' }}>
         <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-tertiary)', padding: '6px 12px 4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          커리큘럼 단계
+          나의 경로
         </p>
         {steps.map((step, idx) => {
           const isCompleted = completedSteps.has(step.id)
           const isCurrent = idx === currentIdx
+          const isLast = idx === steps.length - 1
+          // 이 노드에서 다음 노드로 가는 연결선: 현재 Step까지 완료됐으면 실선(accent)
+          const edgeDone = isCompleted
           return (
-            <button
-              key={step.id}
-              onClick={() => goTo(idx)}
-              className={`step-nav-btn ${isCurrent ? 'active' : ''}`}
-            >
-              <div style={{
-                width: 26, height: 26, borderRadius: 999, flexShrink: 0,
-                border: `2px solid ${isCompleted ? 'var(--success)' : isCurrent ? 'var(--accent)' : 'var(--border)'}`,
-                background: isCompleted ? 'var(--success)' : isCurrent ? 'var(--accent-light)' : 'transparent',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 11, fontWeight: 700,
-                color: isCompleted ? '#fff' : isCurrent ? 'var(--accent)' : 'var(--text-tertiary)',
-              }}>
-                {isCompleted
-                  ? <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5L9.5 3.5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  : idx + 1
-                }
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{
-                  fontSize: 12, fontWeight: isCurrent ? 600 : 400,
-                  color: isCurrent ? 'var(--accent)' : 'var(--text-primary)',
-                  lineHeight: '16px',
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            <div key={step.id} style={{ position: 'relative' }}>
+              <button
+                onClick={() => goTo(idx)}
+                className={`step-nav-btn ${isCurrent ? 'active' : ''}`}
+                style={{ position: 'relative', zIndex: 1 }}
+              >
+                <div style={{
+                  width: 26, height: 26, borderRadius: 999, flexShrink: 0,
+                  border: `2px solid ${isCompleted ? 'var(--accent)' : isCurrent ? 'var(--accent)' : 'var(--border)'}`,
+                  background: isCompleted ? 'var(--accent)' : isCurrent ? '#fff' : 'var(--surface)',
+                  boxShadow: isCurrent ? '0 0 0 4px var(--accent-light)' : 'none',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 11, fontWeight: 700,
+                  color: isCompleted ? '#fff' : isCurrent ? 'var(--accent)' : 'var(--text-tertiary)',
+                  transition: 'background 300ms var(--ease-out), border-color 300ms var(--ease-out), box-shadow 300ms var(--ease-out)',
                 }}>
-                  {step.title}
-                </p>
-                {(step as { estimated_duration?: number }).estimated_duration ? (
-                  <p style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 2 }}>
-                    {(step as { estimated_duration?: number }).estimated_duration}분
+                  {isCompleted
+                    ? <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5L9.5 3.5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    : idx + 1
+                  }
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{
+                    fontSize: 12, fontWeight: isCurrent ? 600 : 400,
+                    color: isCurrent ? 'var(--accent)' : 'var(--text-primary)',
+                    lineHeight: '16px',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    {step.title}
                   </p>
-                ) : null}
-              </div>
-            </button>
+                  {(step as { estimated_duration?: number }).estimated_duration ? (
+                    <p style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 2 }}>
+                      {(step as { estimated_duration?: number }).estimated_duration}분
+                    </p>
+                  ) : null}
+                </div>
+              </button>
+              {/* 노드 사이 연결선 — 완료 구간은 실선(accent), 미완 구간은 점선 */}
+              {!isLast && (
+                <div style={{
+                  position: 'absolute',
+                  left: 25, // 노드 중심(8px 패딩 + 12px 버튼패딩 좌 → 노드 좌측 20 + 13 중심) 보정값
+                  top: 38,
+                  bottom: -6,
+                  width: 0,
+                  borderLeft: edgeDone
+                    ? '2px solid var(--accent)'
+                    : '2px dashed var(--border)',
+                  zIndex: 0,
+                  transition: 'border-color 400ms var(--ease-out)',
+                }} />
+              )}
+            </div>
           )
         })}
       </nav>
@@ -899,19 +929,20 @@ export default function LearningPlayer({
               ← 이전 단계
             </button>
 
-            {/* Step dots */}
+            {/* Step dots — 좌측 Path 지도와 동일한 색 언어 (완료=accent) */}
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
               {steps.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => goTo(i)}
+                  aria-label={`Step ${i + 1}로 이동`}
                   style={{
                     width: i === currentIdx ? 20 : 8,
                     height: 8,
                     borderRadius: 999,
-                    background: i === currentIdx ? 'var(--accent)' : completedSteps.has(steps[i].id) ? 'var(--success)' : 'var(--border)',
+                    background: i === currentIdx ? 'var(--accent)' : completedSteps.has(steps[i].id) ? '#a5a6f6' : 'var(--border)',
                     border: 'none', cursor: 'pointer',
-                    transition: 'all 250ms ease',
+                    transition: 'all 250ms var(--ease-out)',
                     padding: 0,
                   }}
                 />
@@ -940,6 +971,7 @@ export default function LearningPlayer({
             ) : (
               <button
                 onClick={handleToggleComplete}
+                className={isCurrentCompleted ? 'step-done-btn' : ''}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
                   padding: '10px 18px',
@@ -949,6 +981,7 @@ export default function LearningPlayer({
                   color: '#fff',
                   fontWeight: 700, fontSize: 14,
                   cursor: 'pointer', fontFamily: 'inherit',
+                  transition: 'background 300ms var(--ease-out)',
                 }}
               >
                 {isCurrentCompleted ? <><CheckIcon size={14} /> 완료됨</> : '단계 완료 표시'}
@@ -1119,7 +1152,25 @@ export default function LearningPlayer({
         )}
       </div>
 
+      {/* Path 완주 축하 — 점들이 선으로 이어지는 시그니처 모션 */}
+      {showCelebration && (
+        <PathCelebration
+          curriculumTitle={curriculum.title}
+          totalSteps={totalSteps}
+          onClose={() => setShowCelebration(false)}
+        />
+      )}
+
       <style>{`
+        /* Step 완료 순간의 마이크로 모션 — 살짝 튀어오르는 확인 피드백 */
+        .step-done-btn {
+          animation: stepDonePulse 400ms var(--ease-out);
+        }
+        @keyframes stepDonePulse {
+          0% { transform: scale(1); }
+          40% { transform: scale(1.06); }
+          100% { transform: scale(1); }
+        }
         @media (max-width: 768px) {
           .player-mobile-topbar { display: flex !important; }
           .player-mobile-tabs { display: flex !important; }

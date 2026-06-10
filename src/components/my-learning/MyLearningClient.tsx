@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { getCategoryGradient } from '@/lib/categories'
-import { BookOpenIcon, BookmarkIcon, ClockIcon, PencilIcon, FlagIcon, CheckIcon } from '@/components/ui/icons'
+import { BookOpenIcon, ClockIcon, FlagIcon, CheckIcon } from '@/components/ui/icons'
 import { timeAgo } from '@/lib/timeAgo'
 import { FEATURES } from '@/lib/featureFlags'
+import PathEmptyState from '@/components/ui/PathEmptyState'
 
 interface Stats {
   inProgressCount: number
@@ -152,7 +153,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
             </div>
           )}
           {inProgress.length === 0 ? (
-            <EmptyState icon={<BookOpenIcon size={48} style={{ color: 'var(--text-tertiary)' }} />} message="진행 중인 커리큘럼이 없어요" cta="커리큘럼 탐색하기" href="/explore" />
+            <PathEmptyState message="아직 걷고 있는 길이 없어요" desc="첫 Path를 시작하면 여기서 이어갈 수 있어요" cta="첫 길 찾아보기" href="/explore" />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {(activeTab === 'all' ? inProgress.slice(0, 3) : inProgress).map((p: any) => {
@@ -212,7 +213,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
             </div>
           )}
           {completed.length === 0 ? (
-            activeTab === 'completed' && <EmptyState icon={<BookOpenIcon size={48} style={{ color: 'var(--text-tertiary)' }} />} message="아직 완료한 커리큘럼이 없어요" cta="학습 시작하기" href="/explore" />
+            activeTab === 'completed' && <PathEmptyState message="아직 완주한 길이 없어요" desc="끝까지 걸은 Path는 나의 학습 자산으로 남아요" cta="학습 시작하기" href="/explore" />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {(activeTab === 'all' ? completed.slice(0, 3) : completed).map((p: any) => {
@@ -260,7 +261,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
             </div>
           )}
           {saves.length === 0 ? (
-            activeTab === 'saved' && <EmptyState icon={<BookmarkIcon size={48} style={{ color: 'var(--text-tertiary)' }} />} message="저장한 커리큘럼이 없어요" cta="커리큘럼 탐색하기" href="/explore" desc="관심 있는 커리큘럼을 저장하면 여기에 표시돼요" />
+            activeTab === 'saved' && <PathEmptyState message="저장해 둔 길이 없어요" desc="나중에 걷고 싶은 Path를 저장하면 여기에 모여요" cta="둘러보기" href="/explore" />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {(activeTab === 'all' ? saves.slice(0, 3) : saves).map((s: any) => {
@@ -302,7 +303,7 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
             </div>
           )}
           {drafts.length === 0 ? (
-            activeTab === 'drafts' && <EmptyState icon={<PencilIcon size={48} style={{ color: 'var(--text-tertiary)' }} />} message="초안이 없어요" cta="새 커리큘럼 만들기" href="/create" />
+            activeTab === 'drafts' && <PathEmptyState message="만들고 있는 길이 없어요" desc="내가 배운 순서가 누군가의 시작점이 됩니다" cta="새 Path 만들기" href="/create" />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {drafts.map((cur: any) => (
@@ -326,32 +327,16 @@ export default function MyLearningClient({ inProgress, completed, drafts, saves,
         </section>
       )}
 
-      {/* 전부 비어있을 때 */}
+      {/* 전부 비어있을 때 — 길의 시작 */}
       {activeTab === 'all' && inProgress.length === 0 && completed.length === 0 && saves.length === 0 && drafts.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '80px 24px', border: '1px dashed var(--border)', borderRadius: 20 }}>
-          <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
-            <BookOpenIcon size={48} style={{ color: 'var(--text-tertiary)' }} />
-          </div>
-          <h2 style={{ fontSize: 20, marginBottom: 8 }}>학습을 시작해보세요!</h2>
-          <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 28 }}>LearnPath에서 첫 번째 커리큘럼을 발견하고 시작해보세요.</p>
-          <Link href="/explore" style={{ display: 'inline-block', padding: '12px 24px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
-            커리큘럼 탐색하기 →
-          </Link>
-        </div>
+        <PathEmptyState
+          message="첫 길을 시작해보세요"
+          desc="자료를 고르는 대신, Step을 따라가면 됩니다"
+          cta="첫 Path 찾아보기"
+          href="/explore"
+        />
       )}
     </div>
   )
 }
 
-function EmptyState({ icon, message, desc, cta, href }: { icon: React.ReactNode; message: string; desc?: string; cta: string; href: string }) {
-  return (
-    <div style={{ textAlign: 'center', padding: '48px 24px', border: '1px dashed var(--border)', borderRadius: 12 }}>
-      <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>{icon}</div>
-      <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: desc ? 6 : 20 }}>{message}</p>
-      {desc && <p style={{ fontSize: 13, color: 'var(--text-tertiary)', marginBottom: 20 }}>{desc}</p>}
-      <Link href={href} style={{ display: 'inline-block', padding: '10px 18px', borderRadius: 8, background: 'var(--accent)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: 13 }}>
-        {cta} →
-      </Link>
-    </div>
-  )
-}

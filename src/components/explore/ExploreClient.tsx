@@ -5,8 +5,9 @@ import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import type { CurriculumWithCreator } from '@/lib/supabase/types'
 import { getCategoryGradient } from '@/lib/categories'
-import { ClockIcon, UsersIcon, SearchIcon } from '@/components/ui/icons'
+import { ClockIcon, UsersIcon } from '@/components/ui/icons'
 import { FEATURES } from '@/lib/featureFlags'
+import PathEmptyState from '@/components/ui/PathEmptyState'
 
 /* ─ 타입 ─ */
 interface InitialParams {
@@ -421,19 +422,20 @@ export default function ExploreClient({ curricula, initialParams }: Props) {
 
           {/* Grid / List */}
           {curricula.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '80px 24px' }}>
-              <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
-                <SearchIcon size={48} style={{ color: 'var(--text-tertiary)' }} />
+            <div>
+              <PathEmptyState
+                message="이 길은 아직 없어요"
+                desc="다른 키워드나 필터로 찾아보세요"
+              />
+              <div style={{ textAlign: 'center', marginTop: 16 }}>
+                <button onClick={handleReset} style={{
+                  padding: '10px 20px', borderRadius: 8,
+                  background: 'var(--accent)', color: '#fff', border: 'none',
+                  cursor: 'pointer', fontWeight: 600, fontSize: 14, fontFamily: 'inherit',
+                }}>
+                  필터 초기화
+                </button>
               </div>
-              <p style={{ fontSize: 16, color: 'var(--text-secondary)', marginBottom: 8 }}>검색 결과가 없어요</p>
-              <p style={{ fontSize: 14, color: 'var(--text-tertiary)', marginBottom: 24 }}>다른 키워드나 필터로 찾아보세요</p>
-              <button onClick={handleReset} style={{
-                padding: '10px 20px', borderRadius: 8,
-                background: 'var(--accent)', color: '#fff', border: 'none',
-                cursor: 'pointer', fontWeight: 600, fontSize: 14, fontFamily: 'inherit',
-              }}>
-                필터 초기화
-              </button>
             </div>
           ) : view === 'grid' ? (
             <div style={{
