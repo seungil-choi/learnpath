@@ -1039,8 +1039,9 @@ export default function LearningPlayer({
             { key: 'content', label: '학습 콘텐츠' },
             { key: 'toc', label: `목차` },
             { key: 'resources', label: `자료 ${allResources.length}` },
-            { key: 'qa', label: 'Q&A' },
-          ] as const).map(tab => (
+            // Q&A 탭은 Phase 2 (FEATURES.QA_TAB)
+            ...(FEATURES.QA_TAB ? [{ key: 'qa', label: 'Q&A' } as const] : []),
+          ] as readonly { key: 'content' | 'toc' | 'resources' | 'qa'; label: string }[]).map(tab => (
             <button
               key={tab.key}
               onClick={() => setMobileTab(tab.key)}

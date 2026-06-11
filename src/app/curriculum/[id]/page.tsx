@@ -345,8 +345,12 @@ export default async function CurriculumDetailPage({
         @media (max-width: 900px) {
           .hero-thumbnail { display: none !important; }
           .pc-only-sidebar { display: none !important; }
-          /* 하단 고정 CTA 가림 방지 */
+          /* 하단 고정 CTA 가림 방지 (CTA ~76px) */
           body { padding-bottom: 88px; }
+        }
+        @media (max-width: 768px) {
+          /* BottomNav(64) + CTA(~76) 둘 다 떠 있으므로 합산 패딩 */
+          body { padding-bottom: 150px; }
         }
       `}</style>
     </div>

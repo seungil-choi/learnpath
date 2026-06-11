@@ -14,8 +14,24 @@ const notoSansKR = Noto_Sans_KR({
 })
 
 export const metadata: Metadata = {
-  title: 'LearnPath — 나만의 학습 경로',
-  description: '검증된 학습 경로를 따라 배우고, 나만의 커리큘럼을 만드세요.',
+  metadataBase: new URL('https://learnpath-mocha.vercel.app'),
+  title: {
+    default: 'LearnPath — 나만의 학습 경로',
+    template: '%s | LearnPath',
+  },
+  description: '무엇부터 배울지보다, 어떻게 시작할지가 중요하니까. 검증된 학습 경로를 따라 배우고, 나만의 커리큘럼을 만드세요.',
+  openGraph: {
+    type: 'website',
+    locale: 'ko_KR',
+    siteName: 'LearnPath',
+    title: 'LearnPath — 나만의 학습 경로',
+    description: '무엇부터 배울지보다, 어떻게 시작할지가 중요하니까. Follow the Path.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'LearnPath — 나만의 학습 경로',
+    description: '무엇부터 배울지보다, 어떻게 시작할지가 중요하니까. Follow the Path.',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

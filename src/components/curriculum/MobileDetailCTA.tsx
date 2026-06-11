@@ -112,8 +112,9 @@ export default function MobileDetailCTA({
           position: fixed;
           left: 0;
           right: 0;
+          /* 901~ (BottomNav 없음): 바닥에 배치 */
           bottom: 0;
-          z-index: 50;
+          z-index: 95;
           padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0));
           gap: 10px;
           background: rgba(255, 255, 255, 0.97);
@@ -124,6 +125,13 @@ export default function MobileDetailCTA({
         @media (max-width: 900px) {
           .mobile-detail-cta {
             display: flex;
+          }
+        }
+        /* ≤768: BottomNav(64px)가 있으므로 그 위에 얹는다 */
+        @media (max-width: 768px) {
+          .mobile-detail-cta {
+            bottom: calc(64px + env(safe-area-inset-bottom, 0));
+            padding: 10px 16px;
           }
         }
       `}</style>

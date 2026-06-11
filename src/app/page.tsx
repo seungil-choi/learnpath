@@ -146,21 +146,22 @@ export default async function HomePage() {
               <span>•</span> 나만의 속도로, 체계적으로
             </div>
 
-            <h1 style={{
-              fontSize: 48,
+            <h1 className="hero-title" style={{
               fontWeight: 800,
-              lineHeight: '60px',
               letterSpacing: '-1.2px',
               marginBottom: 20,
               color: 'var(--text-primary)',
             }}>
-              배움이{' '}
-              <span style={{
-                background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}>
-                이어지는
+              {/* 모바일에선 '배움이 이어지는'이 한 줄로 유지되도록 word-break 제어 */}
+              <span style={{ whiteSpace: 'nowrap' }}>
+                배움이{' '}
+                <span style={{
+                  background: 'linear-gradient(135deg, var(--accent) 0%, #818cf8 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}>
+                  이어지는
+                </span>
               </span>
               <br />
               나만의 학습 경로
@@ -468,7 +469,7 @@ export default async function HomePage() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px' }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '220px 1fr 1fr 1fr 1fr',
+            gridTemplateColumns: '220px 1fr 1fr 1fr',
             gap: 40,
             marginBottom: 48,
           }} className="footer-grid">
@@ -489,23 +490,29 @@ export default async function HomePage() {
               <FooterSocialLinks />
             </div>
 
-            {/* Links */}
+            {/* Links — 실재하는 페이지만 노출 (죽은 링크는 신뢰 저하) */}
             {[
               {
                 title: '서비스',
-                links: ['탐색', '학습 로드맵', '만들기', '커뮤니티', '내 학습'],
-              },
-              {
-                title: '회사',
-                links: ['회사 소개', '블로그', '채용', '문의하기'],
+                links: [
+                  { label: '탐색', href: '/explore' },
+                  { label: '만들기', href: '/create' },
+                  { label: '내 학습', href: '/my-learning' },
+                ],
               },
               {
                 title: '지원',
-                links: ['도움말 센터', '이용 가이드', '자주 묻는 질문', '피드백'],
+                links: [
+                  { label: '문의하기', href: 'mailto:seungil.9f@gmail.com?subject=%5BLearnPath%5D%20%EB%AC%B8%EC%9D%98' },
+                  { label: '피드백 보내기', href: 'mailto:seungil.9f@gmail.com?subject=%5BLearnPath%5D%20%ED%94%BC%EB%93%9C%EB%B0%B1' },
+                ],
               },
               {
                 title: '정책',
-                links: ['이용약관', '개인정보처리방침', '쿠키 정책', '콘텐츠 가이드라인'],
+                links: [
+                  { label: '이용약관', href: '/terms' },
+                  { label: '개인정보처리방침', href: '/privacy' },
+                ],
               },
             ].map(col => (
               <div key={col.title}>
@@ -514,8 +521,8 @@ export default async function HomePage() {
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {col.links.map(l => (
-                    <a key={l} href="#" style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', textDecoration: 'none', transition: 'color 150ms' }}>
-                      {l}
+                    <a key={l.label} href={l.href} style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', textDecoration: 'none', transition: 'color 150ms' }}>
+                      {l.label}
                     </a>
                   ))}
                 </div>
@@ -542,12 +549,15 @@ export default async function HomePage() {
       </footer>
 
       <style>{`
+        /* Hero 타이틀 반응형 — 인라인 고정값 대신 클래스로 제어 */
+        .hero-title { font-size: 48px; line-height: 60px; }
         @media (max-width: 1024px) {
           .hero-grid { grid-template-columns: 1fr !important; }
           .hero-viz { display: none !important; }
           .footer-grid { grid-template-columns: 1fr 1fr !important; }
         }
         @media (max-width: 640px) {
+          .hero-title { font-size: 32px; line-height: 42px; letter-spacing: -0.8px !important; }
           .footer-grid { grid-template-columns: 1fr 1fr !important; }
         }
       `}</style>
